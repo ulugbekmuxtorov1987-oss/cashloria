@@ -1818,7 +1818,7 @@ const grouped = [level1, level2, level3, level4, level5];
 
 export const LEVELS: Level[] = levelMeta.map((meta, i) => ({
   ...meta,
-  lessons: grouped[i].map((l) => ({ ...l, levelId: meta.id })),
+  lessons: (grouped[i] ?? []).map((l) => ({ ...l, levelId: meta.id })),
 }));
 
 export const ALL_LESSONS: Lesson[] = LEVELS.flatMap((l) => l.lessons);

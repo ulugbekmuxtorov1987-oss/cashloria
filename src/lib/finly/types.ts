@@ -16,7 +16,7 @@ export type Question =
   | {
       id: string;
       kind: "choice";
-      type: "multiple-choice" | "true-false" | "scenario" | "match";
+      type: "multiple-choice" | "true-false" | "scenario" | "match" | "calculate";
       prompt: string;
       options: string[];
       answer: number;
