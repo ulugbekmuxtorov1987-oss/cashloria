@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as FinancialLiteracyRouteImport } from './routes/financial-literacy'
+import { Route as HowToBudgetRouteImport } from './routes/how-to-budget'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
 import { Route as ToolsRouteImport } from './routes/tools'
@@ -31,6 +32,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const FinancialLiteracyRoute = FinancialLiteracyRouteImport.update({
   id: '/financial-literacy',
   path: '/financial-literacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowToBudgetRoute = HowToBudgetRouteImport.update({
+  id: '/how-to-budget',
+  path: '/how-to-budget',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/financial-literacy'
+    | '/how-to-budget'
     | '/library'
     | '/simulators'
     | '/tools'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/financial-literacy'
+    | '/how-to-budget'
     | '/library'
     | '/simulators'
     | '/tools'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/financial-literacy'
+    | '/how-to-budget'
     | '/library'
     | '/simulators'
     | '/tools'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   FinancialLiteracyRoute: typeof FinancialLiteracyRoute
+  HowToBudgetRoute: typeof HowToBudgetRoute
   LibraryRoute: typeof LibraryRoute
   SimulatorsRoute: typeof SimulatorsRoute
   ToolsRoute: typeof ToolsRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/financial-literacy'
       fullPath: '/financial-literacy'
       preLoaderRoute: typeof FinancialLiteracyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-to-budget': {
+      id: '/how-to-budget'
+      path: '/how-to-budget'
+      fullPath: '/how-to-budget'
+      preLoaderRoute: typeof HowToBudgetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   FinancialLiteracyRoute: FinancialLiteracyRoute,
+  HowToBudgetRoute: HowToBudgetRoute,
   LibraryRoute: LibraryRoute,
   SimulatorsRoute: SimulatorsRoute,
   ToolsRoute: ToolsRoute,
