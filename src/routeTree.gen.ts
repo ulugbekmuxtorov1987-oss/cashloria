@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnLessonIdRouteImport } from './routes/learn.$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnIndexRoute = LearnIndexRouteImport.update({
@@ -31,30 +37,34 @@ const LearnLessonIdRoute = LearnLessonIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn': typeof LearnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/learn/$lessonId' | '/learn/'
+  fullPaths: '/' | '/dashboard' | '/learn/$lessonId' | '/learn/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/learn/$lessonId' | '/learn'
-  id: '__root__' | '/' | '/learn/$lessonId' | '/learn/'
+  to: '/' | '/dashboard' | '/learn/$lessonId' | '/learn'
+  id: '__root__' | '/' | '/dashboard' | '/learn/$lessonId' | '/learn/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
   LearnIndexRoute: typeof LearnIndexRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn/': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
   LearnIndexRoute: LearnIndexRoute,
 }
