@@ -16,6 +16,7 @@ import { Route as HowToBudgetRouteImport } from './routes/how-to-budget'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as WhatIsCompoundInterestRouteImport } from './routes/what-is-compound-interest'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnLessonIdRouteImport } from './routes/learn.$lessonId'
 
@@ -54,6 +55,11 @@ const ToolsRoute = ToolsRouteImport.update({
   path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WhatIsCompoundInterestRoute = WhatIsCompoundInterestRouteImport.update({
+  id: '/what-is-compound-interest',
+  path: '/what-is-compound-interest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LearnIndexRoute = LearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn': typeof LearnIndexRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/simulators'
     | '/tools'
+    | '/what-is-compound-interest'
     | '/learn/$lessonId'
     | '/learn/'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/simulators'
     | '/tools'
+    | '/what-is-compound-interest'
     | '/learn/$lessonId'
     | '/learn'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/simulators'
     | '/tools'
+    | '/what-is-compound-interest'
     | '/learn/$lessonId'
     | '/learn/'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   SimulatorsRoute: typeof SimulatorsRoute
   ToolsRoute: typeof ToolsRoute
+  WhatIsCompoundInterestRoute: typeof WhatIsCompoundInterestRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
   LearnIndexRoute: typeof LearnIndexRoute
 }
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/what-is-compound-interest': {
+      id: '/what-is-compound-interest'
+      path: '/what-is-compound-interest'
+      fullPath: '/what-is-compound-interest'
+      preLoaderRoute: typeof WhatIsCompoundInterestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/learn/': {
       id: '/learn/'
       path: '/learn'
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   SimulatorsRoute: SimulatorsRoute,
   ToolsRoute: ToolsRoute,
+  WhatIsCompoundInterestRoute: WhatIsCompoundInterestRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
   LearnIndexRoute: LearnIndexRoute,
 }
