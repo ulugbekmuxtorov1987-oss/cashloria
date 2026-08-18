@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as FinancialLiteracyRouteImport } from './routes/financial-literacy'
+import { Route as HowToBudgetRouteImport } from './routes/how-to-budget'
+import { Route as HowToSaveMoneyRouteImport } from './routes/how-to-save-money'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as SimulatorsRouteImport } from './routes/simulators'
+import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as WhatIsCompoundInterestRouteImport } from './routes/what-is-compound-interest'
+import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as LearnLessonIdRouteImport } from './routes/learn.$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinancialLiteracyRoute = FinancialLiteracyRouteImport.update({
+  id: '/financial-literacy',
+  path: '/financial-literacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowToBudgetRoute = HowToBudgetRouteImport.update({
+  id: '/how-to-budget',
+  path: '/how-to-budget',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowToSaveMoneyRoute = HowToSaveMoneyRouteImport.update({
+  id: '/how-to-save-money',
+  path: '/how-to-save-money',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulatorsRoute = SimulatorsRouteImport.update({
+  id: '/simulators',
+  path: '/simulators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatIsCompoundInterestRoute = WhatIsCompoundInterestRouteImport.update({
+  id: '/what-is-compound-interest',
+  path: '/what-is-compound-interest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnIndexRoute = LearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnLessonIdRoute = LearnLessonIdRouteImport.update({
+  id: '/learn/$lessonId',
+  path: '/learn/$lessonId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
+  '/how-to-save-money': typeof HowToSaveMoneyRoute
+  '/library': typeof LibraryRoute
+  '/simulators': typeof SimulatorsRoute
+  '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
+  '/how-to-save-money': typeof HowToSaveMoneyRoute
+  '/library': typeof LibraryRoute
+  '/simulators': typeof SimulatorsRoute
+  '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/learn': typeof LearnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/financial-literacy': typeof FinancialLiteracyRoute
+  '/how-to-budget': typeof HowToBudgetRoute
+  '/how-to-save-money': typeof HowToSaveMoneyRoute
+  '/library': typeof LibraryRoute
+  '/simulators': typeof SimulatorsRoute
+  '/tools': typeof ToolsRoute
+  '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/learn/$lessonId': typeof LearnLessonIdRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/financial-literacy'
+    | '/how-to-budget'
+    | '/how-to-save-money'
+    | '/library'
+    | '/simulators'
+    | '/tools'
+    | '/what-is-compound-interest'
+    | '/learn/$lessonId'
+    | '/learn/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/financial-literacy'
+    | '/how-to-budget'
+    | '/how-to-save-money'
+    | '/library'
+    | '/simulators'
+    | '/tools'
+    | '/what-is-compound-interest'
+    | '/learn/$lessonId'
+    | '/learn'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/financial-literacy'
+    | '/how-to-budget'
+    | '/how-to-save-money'
+    | '/library'
+    | '/simulators'
+    | '/tools'
+    | '/what-is-compound-interest'
+    | '/learn/$lessonId'
+    | '/learn/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  FinancialLiteracyRoute: typeof FinancialLiteracyRoute
+  HowToBudgetRoute: typeof HowToBudgetRoute
+  HowToSaveMoneyRoute: typeof HowToSaveMoneyRoute
+  LibraryRoute: typeof LibraryRoute
+  SimulatorsRoute: typeof SimulatorsRoute
+  ToolsRoute: typeof ToolsRoute
+  WhatIsCompoundInterestRoute: typeof WhatIsCompoundInterestRoute
+  LearnLessonIdRoute: typeof LearnLessonIdRoute
+  LearnIndexRoute: typeof LearnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financial-literacy': {
+      id: '/financial-literacy'
+      path: '/financial-literacy'
+      fullPath: '/financial-literacy'
+      preLoaderRoute: typeof FinancialLiteracyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-to-budget': {
+      id: '/how-to-budget'
+      path: '/how-to-budget'
+      fullPath: '/how-to-budget'
+      preLoaderRoute: typeof HowToBudgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-to-save-money': {
+      id: '/how-to-save-money'
+      path: '/how-to-save-money'
+      fullPath: '/how-to-save-money'
+      preLoaderRoute: typeof HowToSaveMoneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulators': {
+      id: '/simulators'
+      path: '/simulators'
+      fullPath: '/simulators'
+      preLoaderRoute: typeof SimulatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/what-is-compound-interest': {
+      id: '/what-is-compound-interest'
+      path: '/what-is-compound-interest'
+      fullPath: '/what-is-compound-interest'
+      preLoaderRoute: typeof WhatIsCompoundInterestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/': {
+      id: '/learn/'
+      path: '/learn'
+      fullPath: '/learn/'
+      preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/$lessonId': {
+      id: '/learn/$lessonId'
+      path: '/learn/$lessonId'
+      fullPath: '/learn/$lessonId'
+      preLoaderRoute: typeof LearnLessonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  FinancialLiteracyRoute: FinancialLiteracyRoute,
+  HowToBudgetRoute: HowToBudgetRoute,
+  HowToSaveMoneyRoute: HowToSaveMoneyRoute,
+  LibraryRoute: LibraryRoute,
+  SimulatorsRoute: SimulatorsRoute,
+  ToolsRoute: ToolsRoute,
+  WhatIsCompoundInterestRoute: WhatIsCompoundInterestRoute,
+  LearnLessonIdRoute: LearnLessonIdRoute,
+  LearnIndexRoute: LearnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
