@@ -14,16 +14,381 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: number
+          lesson_slug: string | null
+          path: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: number
+          lesson_slug?: string | null
+          path?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: number
+          lesson_slug?: string | null
+          path?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
+      content_blocks: {
+        Row: {
+          body: string
+          id: string
+          key: string
+          label: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          id?: string
+          key: string
+          label: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          id?: string
+          key?: string
+          label?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lesson_sources: {
+        Row: {
+          id: string
+          lesson_id: string
+          organization: string | null
+          published_on: string | null
+          sort_order: number
+          title: string
+          url: string
+        }
+        Insert: {
+          id?: string
+          lesson_id: string
+          organization?: string | null
+          published_on?: string | null
+          sort_order?: number
+          title: string
+          url: string
+        }
+        Update: {
+          id?: string
+          lesson_id?: string
+          organization?: string | null
+          published_on?: string | null
+          sort_order?: number
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_sources_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          category: string
+          challenge: Json
+          created_at: string
+          difficulty: string
+          emoji: string
+          example: Json
+          explanation: Json
+          id: string
+          interactive: Json | null
+          level_id: string | null
+          minutes: number
+          recap: Json
+          slug: string
+          sort_order: number
+          status: string
+          summary: string
+          title: string
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          category?: string
+          challenge?: Json
+          created_at?: string
+          difficulty?: string
+          emoji?: string
+          example?: Json
+          explanation?: Json
+          id?: string
+          interactive?: Json | null
+          level_id?: string | null
+          minutes?: number
+          recap?: Json
+          slug: string
+          sort_order?: number
+          status?: string
+          summary?: string
+          title: string
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          category?: string
+          challenge?: Json
+          created_at?: string
+          difficulty?: string
+          emoji?: string
+          example?: Json
+          explanation?: Json
+          id?: string
+          interactive?: Json | null
+          level_id?: string | null
+          minutes?: number
+          recap?: Json
+          slug?: string
+          sort_order?: number
+          status?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      levels: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          locked: boolean
+          number: number
+          published: boolean
+          sort_order: number
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          locked?: boolean
+          number: number
+          published?: boolean
+          sort_order?: number
+          subtitle?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          locked?: boolean
+          number?: number
+          published?: boolean
+          sort_order?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      quiz_questions: {
+        Row: {
+          accepts: Json
+          answer: string
+          explanation: string
+          id: string
+          kind: string
+          lesson_id: string
+          options: Json
+          prompt: string
+          sort_order: number
+          type: string
+          xp: number
+        }
+        Insert: {
+          accepts?: Json
+          answer?: string
+          explanation?: string
+          id?: string
+          kind?: string
+          lesson_id: string
+          options?: Json
+          prompt: string
+          sort_order?: number
+          type?: string
+          xp?: number
+        }
+        Update: {
+          accepts?: Json
+          answer?: string
+          explanation?: string
+          id?: string
+          kind?: string
+          lesson_id?: string
+          options?: Json
+          prompt?: string
+          sort_order?: number
+          type?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          author_name: string
+          avatar_url: string | null
+          contact_email: string | null
+          default_language: string
+          extra_links: Json
+          favicon_url: string | null
+          ga_measurement_id: string | null
+          id: number
+          instagram_url: string | null
+          logo_url: string | null
+          seo_description: string | null
+          seo_title: string | null
+          site_description: string
+          site_name: string
+          social_image_url: string | null
+          telegram_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          avatar_url?: string | null
+          contact_email?: string | null
+          default_language?: string
+          extra_links?: Json
+          favicon_url?: string | null
+          ga_measurement_id?: string | null
+          id?: number
+          instagram_url?: string | null
+          logo_url?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          site_description?: string
+          site_name?: string
+          social_image_url?: string | null
+          telegram_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          avatar_url?: string | null
+          contact_email?: string | null
+          default_language?: string
+          extra_links?: Json
+          favicon_url?: string | null
+          ga_measurement_id?: string | null
+          id?: number
+          instagram_url?: string | null
+          logo_url?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
+          site_description?: string
+          site_name?: string
+          social_image_url?: string | null
+          telegram_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +515,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
