@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ProgressProvider } from "@/lib/finly/progress";
+import { Toaster } from "@/components/ui/sonner";
+import { trackPageView } from "@/lib/analytics";
 
 function NotFoundComponent() {
   return (
