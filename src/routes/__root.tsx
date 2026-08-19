@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ProgressProvider } from "@/lib/finly/progress";
+import { Toaster } from "@/components/ui/sonner";
+import { trackPageView } from "@/lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -129,12 +131,20 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return;
+    trackPageView(pathname);
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ProgressProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
+        <Toaster />
       </ProgressProvider>
     </QueryClientProvider>
   );
