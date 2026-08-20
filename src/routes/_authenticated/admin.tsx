@@ -97,7 +97,10 @@ function AdminPage() {
   async function remove(id: string) {
     if (!window.confirm("Delete this lesson and its quiz and sources?")) return;
     const { error } = await supabase.from("lessons").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Lesson deleted");
     if (selected === id) setSelected(null);
     void queryClient.invalidateQueries({ queryKey: ["admin-lessons"] });
