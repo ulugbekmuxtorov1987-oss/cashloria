@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as FinancialLiteracyRouteImport } from './routes/financial-literacy'
@@ -19,12 +20,17 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as WhatIsCompoundInterestRouteImport } from './routes/what-is-compound-interest'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnLessonIdRouteImport } from './routes/learn.$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -72,6 +78,11 @@ const WhatIsCompoundInterestRoute = WhatIsCompoundInterestRouteImport.update({
   path: '/what-is-compound-interest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const LearnIndexRoute = LearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
@@ -94,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
@@ -108,12 +120,14 @@ export interface FileRoutesByTo {
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn': typeof LearnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/financial-literacy': typeof FinancialLiteracyRoute
@@ -123,6 +137,7 @@ export interface FileRoutesById {
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
 }
@@ -139,6 +154,7 @@ export interface FileRouteTypes {
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
+    | '/admin'
     | '/learn/$lessonId'
     | '/learn/'
   fileRoutesByTo: FileRoutesByTo
@@ -153,11 +169,13 @@ export interface FileRouteTypes {
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
+    | '/admin'
     | '/learn/$lessonId'
     | '/learn'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/auth'
     | '/dashboard'
     | '/financial-literacy'
@@ -167,12 +185,14 @@ export interface FileRouteTypes {
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
+    | '/_authenticated/admin'
     | '/learn/$lessonId'
     | '/learn/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   FinancialLiteracyRoute: typeof FinancialLiteracyRoute
@@ -193,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -258,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhatIsCompoundInterestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/learn/': {
       id: '/learn/'
       path: '/learn'
@@ -275,8 +309,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   FinancialLiteracyRoute: FinancialLiteracyRoute,
