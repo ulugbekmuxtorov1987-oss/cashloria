@@ -86,6 +86,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Short, interactive lessons that teach budgeting, saving, credit and investing.",
       },
       { name: "author", content: "Finly" },
+      {
+        name: "google-site-verification",
+        content: "XicYLKJotimroLI-F7x0ZFsniZKkeSx3riCoqshmDzY",
+      },
       { property: "og:title", content: "Finly — Learn Personal Finance" },
       {
         property: "og:description",
