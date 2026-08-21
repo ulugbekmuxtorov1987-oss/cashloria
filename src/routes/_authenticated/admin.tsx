@@ -65,29 +65,48 @@ function AdminPage() {
     queryKey: ["admin-stats"],
     enabled: isAdmin,
     queryFn: async () => {
-      const since = startOfToday();
-      const [views, completes, allCompletes] = await Promise.all([
+      const since30 = daysAgo(30);
+      const today = daysAgo(0);
+      const week = daysAgo(7);
+
+      const [recent, totals] = await Promise.all([
         supabase
           .from("analytics_events")
-          .select("visitor_id")
-          .eq("event_type", "page_view")
-          .gte("created_at", since),
-        supabase
-          .from("analytics_events")
-          .select("id", { count: "exact", head: true })
-          .eq("event_type", "lesson_complete")
-          .gte("created_at", since),
+          .select("event_type, path, lesson_slug, visitor_id, created_at")
+          .gte("created_at", since30)
+          .order("created_at", { ascending: false })
+          .limit(20000),
         supabase
           .from("analytics_events")
           .select("id", { count: "exact", head: true })
           .eq("event_type", "lesson_complete"),
       ]);
-      const visitorsToday = new Set((views.data ?? []).map((r) => r.visitor_id ?? "anon")).size;
+      if (recent.error) throw recent.error;
+
+      const rows = (recent.data ?? []) as EventRow[];
+      const inRange = (r: EventRow, from: string) => r.created_at >= from;
+      const uniq = (rs: EventRow[]) => new Set(rs.map((r) => r.visitor_id ?? "anon")).size;
+
+      const views = rows.filter((r) => r.event_type === "page_view");
+      const completes = rows.filter((r) => r.event_type === "lesson_complete");
+      const quizzes = rows.filter((r) => r.event_type === "quiz_attempt");
+
       return {
-        visitorsToday,
-        pageViewsToday: views.data?.length ?? 0,
-        lessonsCompletedToday: completes.count ?? 0,
-        lessonsCompletedTotal: allCompletes.count ?? 0,
+        visitorsToday: uniq(views.filter((r) => inRange(r, today))),
+        visitorsWeek: uniq(views.filter((r) => inRange(r, week))),
+        visitorsMonth: uniq(views),
+        pageViewsToday: views.filter((r) => inRange(r, today)).length,
+        pageViewsWeek: views.filter((r) => inRange(r, week)).length,
+        pageViewsMonth: views.length,
+        lessonsCompletedToday: completes.filter((r) => inRange(r, today)).length,
+        lessonsCompletedMonth: completes.length,
+        lessonsCompletedTotal: totals.count ?? 0,
+        quizAttemptsToday: quizzes.filter((r) => inRange(r, today)).length,
+        quizAttemptsMonth: quizzes.length,
+        topLessons: topCounts(
+          completes.filter((r) => r.lesson_slug).map((r) => ({ key: r.lesson_slug as string })),
+        ),
+        topPages: topCounts(views.filter((r) => r.path).map((r) => ({ key: r.path as string }))),
       };
     },
   });
