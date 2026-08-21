@@ -19,10 +19,28 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-function startOfToday() {
+function daysAgo(n: number) {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - n);
   return d.toISOString();
+}
+
+type EventRow = {
+  event_type: string;
+  path: string | null;
+  lesson_slug: string | null;
+  visitor_id: string | null;
+  created_at: string;
+};
+
+function topCounts(rows: { key: string }[], limit = 5) {
+  const map = new Map<string, number>();
+  for (const r of rows) map.set(r.key, (map.get(r.key) ?? 0) + 1);
+  return [...map.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
 }
 
 function AdminPage() {

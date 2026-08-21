@@ -4,6 +4,7 @@ import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { getLesson, nextLessonId } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
+import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
 
 export const Route = createFileRoute("/learn/$lessonId")({
   head: ({ params }) => {
