@@ -271,6 +271,34 @@ function Stat({ label, value }: { label: string; value: number | string }) {
   );
 }
 
+function TopList({
+  title,
+  items,
+  empty,
+}: {
+  title: string;
+  items: { key: string; count: number }[];
+  empty: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
+      {items.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">{empty}</p>
+      ) : (
+        <ol className="mt-2 space-y-1.5">
+          {items.map((i) => (
+            <li key={i.key} className="flex items-center justify-between gap-3 text-sm">
+              <span className="truncate">{i.key}</span>
+              <span className="font-semibold">{i.count}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 function Centered({ children }: { children: React.ReactNode }) {
   return (
     <main className="flex min-h-screen items-center justify-center px-4 text-center">
