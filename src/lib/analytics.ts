@@ -38,3 +38,7 @@ export function trackPageView(path: string) {
 export function trackLessonComplete(lessonSlug: string) {
   void log("lesson_complete", { lesson_slug: lessonSlug });
 }
+
+export function trackQuizAttempt(lessonSlug: string) {
+  void log("quiz_attempt", { lesson_slug: lessonSlug });
+}

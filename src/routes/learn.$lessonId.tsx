@@ -61,6 +61,8 @@ function LessonPage() {
     const correct = lesson.quiz.filter((q) => isCorrect(q, answers[q.id] ?? "")).length;
     const { xpGained } = completeLesson(lesson.id, correct, lesson.quiz.length);
     setResult({ correct, total: lesson.quiz.length, xpGained });
+    trackQuizAttempt(lesson.id);
+    trackLessonComplete(lesson.id);
   }
 
   return (
