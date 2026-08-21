@@ -19,10 +19,28 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-function startOfToday() {
+function daysAgo(n: number) {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - n);
   return d.toISOString();
+}
+
+type EventRow = {
+  event_type: string;
+  path: string | null;
+  lesson_slug: string | null;
+  visitor_id: string | null;
+  created_at: string;
+};
+
+function topCounts(rows: { key: string }[], limit = 5) {
+  const map = new Map<string, number>();
+  for (const r of rows) map.set(r.key, (map.get(r.key) ?? 0) + 1);
+  return [...map.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
 }
 
 function AdminPage() {
@@ -47,29 +65,48 @@ function AdminPage() {
     queryKey: ["admin-stats"],
     enabled: isAdmin,
     queryFn: async () => {
-      const since = startOfToday();
-      const [views, completes, allCompletes] = await Promise.all([
+      const since30 = daysAgo(30);
+      const today = daysAgo(0);
+      const week = daysAgo(7);
+
+      const [recent, totals] = await Promise.all([
         supabase
           .from("analytics_events")
-          .select("visitor_id")
-          .eq("event_type", "page_view")
-          .gte("created_at", since),
-        supabase
-          .from("analytics_events")
-          .select("id", { count: "exact", head: true })
-          .eq("event_type", "lesson_complete")
-          .gte("created_at", since),
+          .select("event_type, path, lesson_slug, visitor_id, created_at")
+          .gte("created_at", since30)
+          .order("created_at", { ascending: false })
+          .limit(20000),
         supabase
           .from("analytics_events")
           .select("id", { count: "exact", head: true })
           .eq("event_type", "lesson_complete"),
       ]);
-      const visitorsToday = new Set((views.data ?? []).map((r) => r.visitor_id ?? "anon")).size;
+      if (recent.error) throw recent.error;
+
+      const rows = (recent.data ?? []) as EventRow[];
+      const inRange = (r: EventRow, from: string) => r.created_at >= from;
+      const uniq = (rs: EventRow[]) => new Set(rs.map((r) => r.visitor_id ?? "anon")).size;
+
+      const views = rows.filter((r) => r.event_type === "page_view");
+      const completes = rows.filter((r) => r.event_type === "lesson_complete");
+      const quizzes = rows.filter((r) => r.event_type === "quiz_attempt");
+
       return {
-        visitorsToday,
-        pageViewsToday: views.data?.length ?? 0,
-        lessonsCompletedToday: completes.count ?? 0,
-        lessonsCompletedTotal: allCompletes.count ?? 0,
+        visitorsToday: uniq(views.filter((r) => inRange(r, today))),
+        visitorsWeek: uniq(views.filter((r) => inRange(r, week))),
+        visitorsMonth: uniq(views),
+        pageViewsToday: views.filter((r) => inRange(r, today)).length,
+        pageViewsWeek: views.filter((r) => inRange(r, week)).length,
+        pageViewsMonth: views.length,
+        lessonsCompletedToday: completes.filter((r) => inRange(r, today)).length,
+        lessonsCompletedMonth: completes.length,
+        lessonsCompletedTotal: totals.count ?? 0,
+        quizAttemptsToday: quizzes.filter((r) => inRange(r, today)).length,
+        quizAttemptsMonth: quizzes.length,
+        topLessons: topCounts(
+          completes.filter((r) => r.lesson_slug).map((r) => ({ key: r.lesson_slug as string })),
+        ),
+        topPages: topCounts(views.filter((r) => r.path).map((r) => ({ key: r.path as string }))),
       };
     },
   });
@@ -145,9 +182,25 @@ function AdminPage() {
 
       <section className="mt-6 grid gap-3 sm:grid-cols-4">
         <Stat label="Visitors today" value={stats?.visitorsToday ?? "—"} />
+        <Stat label="Visitors (7 days)" value={stats?.visitorsWeek ?? "—"} />
+        <Stat label="Visitors (30 days)" value={stats?.visitorsMonth ?? "—"} />
         <Stat label="Page views today" value={stats?.pageViewsToday ?? "—"} />
+        <Stat label="Page views (7 days)" value={stats?.pageViewsWeek ?? "—"} />
+        <Stat label="Page views (30 days)" value={stats?.pageViewsMonth ?? "—"} />
         <Stat label="Lessons completed today" value={stats?.lessonsCompletedToday ?? "—"} />
         <Stat label="Lessons completed (all time)" value={stats?.lessonsCompletedTotal ?? "—"} />
+        <Stat label="Quiz attempts today" value={stats?.quizAttemptsToday ?? "—"} />
+        <Stat label="Quiz attempts (30 days)" value={stats?.quizAttemptsMonth ?? "—"} />
+        <Stat label="Lessons completed (30 days)" value={stats?.lessonsCompletedMonth ?? "—"} />
+      </section>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        <TopList
+          title="Top lessons (30 days)"
+          empty="No lesson completions recorded yet."
+          items={stats?.topLessons ?? []}
+        />
+        <TopList title="Top pages (30 days)" empty="No page views recorded yet." items={stats?.topPages ?? []} />
       </section>
 
       <section className="mt-8">
@@ -214,6 +267,34 @@ function Stat({ label, value }: { label: string; value: number | string }) {
     <div className="rounded-2xl border border-border bg-card p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-1 font-display text-2xl font-extrabold">{value}</p>
+    </div>
+  );
+}
+
+function TopList({
+  title,
+  items,
+  empty,
+}: {
+  title: string;
+  items: { key: string; count: number }[];
+  empty: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
+      {items.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">{empty}</p>
+      ) : (
+        <ol className="mt-2 space-y-1.5">
+          {items.map((i) => (
+            <li key={i.key} className="flex items-center justify-between gap-3 text-sm">
+              <span className="truncate">{i.key}</span>
+              <span className="font-semibold">{i.count}</span>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }

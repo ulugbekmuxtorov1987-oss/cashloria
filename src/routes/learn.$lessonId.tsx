@@ -4,6 +4,7 @@ import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { getLesson, nextLessonId } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
+import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
 
 export const Route = createFileRoute("/learn/$lessonId")({
   head: ({ params }) => {
@@ -61,6 +62,8 @@ function LessonPage() {
     const correct = lesson.quiz.filter((q) => isCorrect(q, answers[q.id] ?? "")).length;
     const { xpGained } = completeLesson(lesson.id, correct, lesson.quiz.length);
     setResult({ correct, total: lesson.quiz.length, xpGained });
+    trackQuizAttempt(lesson.id);
+    trackLessonComplete(lesson.id);
   }
 
   return (
