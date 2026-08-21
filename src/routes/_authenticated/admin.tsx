@@ -182,9 +182,25 @@ function AdminPage() {
 
       <section className="mt-6 grid gap-3 sm:grid-cols-4">
         <Stat label="Visitors today" value={stats?.visitorsToday ?? "—"} />
+        <Stat label="Visitors (7 days)" value={stats?.visitorsWeek ?? "—"} />
+        <Stat label="Visitors (30 days)" value={stats?.visitorsMonth ?? "—"} />
         <Stat label="Page views today" value={stats?.pageViewsToday ?? "—"} />
+        <Stat label="Page views (7 days)" value={stats?.pageViewsWeek ?? "—"} />
+        <Stat label="Page views (30 days)" value={stats?.pageViewsMonth ?? "—"} />
         <Stat label="Lessons completed today" value={stats?.lessonsCompletedToday ?? "—"} />
         <Stat label="Lessons completed (all time)" value={stats?.lessonsCompletedTotal ?? "—"} />
+        <Stat label="Quiz attempts today" value={stats?.quizAttemptsToday ?? "—"} />
+        <Stat label="Quiz attempts (30 days)" value={stats?.quizAttemptsMonth ?? "—"} />
+        <Stat label="Lessons completed (30 days)" value={stats?.lessonsCompletedMonth ?? "—"} />
+      </section>
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        <TopList
+          title="Top lessons (30 days)"
+          empty="No lesson completions recorded yet."
+          items={stats?.topLessons ?? []}
+        />
+        <TopList title="Top pages (30 days)" empty="No page views recorded yet." items={stats?.topPages ?? []} />
       </section>
 
       <section className="mt-8">
