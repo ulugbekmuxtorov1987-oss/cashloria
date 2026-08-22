@@ -224,22 +224,28 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           email: string | null
           full_name: string | null
           id: string
+          language: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
+          language?: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
+          language?: string
         }
         Relationships: []
       }
@@ -350,6 +356,48 @@ export type Database = {
           social_image_url?: string | null
           telegram_url?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          achievements: Json
+          challenges: Json
+          country: string
+          created_at: string
+          favorites: Json
+          language: string
+          lessons: Json
+          streak: Json
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          achievements?: Json
+          challenges?: Json
+          country?: string
+          created_at?: string
+          favorites?: Json
+          language?: string
+          lessons?: Json
+          streak?: Json
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          achievements?: Json
+          challenges?: Json
+          country?: string
+          created_at?: string
+          favorites?: Json
+          language?: string
+          lessons?: Json
+          streak?: Json
+          updated_at?: string
+          user_id?: string
+          xp?: number
         }
         Relationships: []
       }
