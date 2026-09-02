@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ProgressProvider } from "@/lib/finly/progress";
 import { Toaster } from "@/components/ui/sonner";
 import { trackPageView } from "@/lib/analytics";
+import { ThemeProvider } from "@/lib/theme";
 
 function NotFoundComponent() {
   return (
