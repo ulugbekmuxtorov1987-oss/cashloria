@@ -52,9 +52,7 @@ export function useUpdateProfile(userId: string | undefined) {
   return useMutation({
     mutationFn: async (patch: Partial<Pick<Profile, "full_name" | "avatar_url" | "language">>) => {
       if (!userId) throw new Error("Not signed in");
-      const { error } = await supabase
-        .from("profiles")
-        .upsert({ id: userId, ...patch }, { onConflict: "id" });
+      const { error } = await supabase.from("profiles").update(patch).eq("id", userId);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["profile", userId] }),
