@@ -53,11 +53,12 @@ function localizeQuestion(q: Question, tx: LessonTx["quiz"][string] | undefined)
       explanation: tx.explanation,
     };
   }
+  const accepts = tx.accepts ?? q.accepts;
   return {
     ...q,
     prompt: tx.prompt,
     answer: tx.answer ?? q.answer,
-    accepts: tx.accepts ?? q.accepts,
+    ...(accepts ? { accepts } : {}),
     explanation: tx.explanation,
   };
 }
