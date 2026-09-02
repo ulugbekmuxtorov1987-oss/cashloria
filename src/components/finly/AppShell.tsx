@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { AccountMenu } from "@/components/finly/AccountMenu";
 import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library } from "lucide-react";
 import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
