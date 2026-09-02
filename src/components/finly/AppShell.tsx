@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { AccountMenu } from "@/components/finly/AccountMenu";
 import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library } from "lucide-react";
 import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
@@ -61,6 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="hidden rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold sm:inline">
               {rank.emoji} {rank.name}
             </span>
+            <AccountMenu />
           </div>
         </div>
       </header>
