@@ -61,6 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="hidden rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold sm:inline">
               {rank.emoji} {rank.name}
             </span>
+            <AccountMenu />
           </div>
         </div>
       </header>
