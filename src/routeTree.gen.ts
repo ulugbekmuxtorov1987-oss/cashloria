@@ -17,6 +17,7 @@ import { Route as FinancialLiteracyRouteImport } from './routes/financial-litera
 import { Route as HowToBudgetRouteImport } from './routes/how-to-budget'
 import { Route as HowToSaveMoneyRouteImport } from './routes/how-to-save-money'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as WhatIsCompoundInterestRouteImport } from './routes/what-is-compound-interest'
@@ -63,6 +64,11 @@ const HowToSaveMoneyRoute = HowToSaveMoneyRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SimulatorsRoute = SimulatorsRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/reset-password'
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/reset-password'
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/reset-password'
     | '/simulators'
     | '/tools'
     | '/what-is-compound-interest'
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   HowToBudgetRoute: typeof HowToBudgetRoute
   HowToSaveMoneyRoute: typeof HowToSaveMoneyRoute
   LibraryRoute: typeof LibraryRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SimulatorsRoute: typeof SimulatorsRoute
   ToolsRoute: typeof ToolsRoute
   WhatIsCompoundInterestRoute: typeof WhatIsCompoundInterestRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/simulators': {
@@ -371,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowToBudgetRoute: HowToBudgetRoute,
   HowToSaveMoneyRoute: HowToSaveMoneyRoute,
   LibraryRoute: LibraryRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SimulatorsRoute: SimulatorsRoute,
   ToolsRoute: ToolsRoute,
   WhatIsCompoundInterestRoute: WhatIsCompoundInterestRoute,
