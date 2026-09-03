@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { ALL_LESSONS, CATEGORIES } from "@/lib/finly/curriculum";
+import { useProgress } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/library")({
   head: () => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/library")({
 });
 
 function LibraryPage() {
+  const { isUnlocked } = useProgress();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("all");
 

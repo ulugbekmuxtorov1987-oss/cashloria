@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,14 @@ import { LessonEditor } from "@/components/admin/LessonEditor";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  // Route-level admin gate: non-admins never reach the page, even via direct URL.
+  beforeLoad: async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const uid = userData.user?.id;
+    if (!uid) throw redirect({ to: "/auth" });
+    const { data: allowed } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
+    if (!allowed) throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Admin — Finly" },
