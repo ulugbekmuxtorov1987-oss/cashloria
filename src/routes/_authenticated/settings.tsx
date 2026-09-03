@@ -64,13 +64,23 @@ function SettingsPage() {
       toast.error("New passwords don't match");
       return;
     }
+    const email = profile?.email ?? user?.email;
+    if (!email) {
+      toast.error("No email on this account");
+      return;
+    }
     setBusy(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ...({ current_password: currentPassword } as any),
+      // Verify the current password for real: re-authenticate first.
+      const { error: verifyError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword,
       });
+      if (verifyError) {
+        toast.error("Current password is incorrect");
+        return;
+      }
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
       toast.success("Password updated");
       setCurrentPassword("");

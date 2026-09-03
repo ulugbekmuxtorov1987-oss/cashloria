@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ALL_LESSONS, CATEGORIES, FREE_LESSONS, LESSON_ORDER } from "./curriculum";
 import { ACHIEVEMENTS } from "./achievements";
 import type { CountryCode, LanguageCode } from "./types";
@@ -86,6 +86,8 @@ const ProgressContext = createContext<Ctx | null>(null);
 export function ProgressProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<ProgressState>(initialState);
   const [ready, setReady] = useState(false);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     try {
@@ -120,6 +122,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   );
 
   const completeLesson = useCallback<Ctx["completeLesson"]>((lessonId, correct, total) => {
+    // Hard gate: never award XP or record progress for a locked lesson,
+    // even if the lesson page was opened via a direct URL.
+    const orderIndex = LESSON_ORDER.indexOf(lessonId);
+    const prevLessonId = LESSON_ORDER[orderIndex - 1];
+    const locked = orderIndex >= FREE_LESSONS && !(prevLessonId && stateRef.current.lessons[prevLessonId]);
+    if (locked) return { xpGained: 0, unlocked: [] };
+
     const lesson = ALL_LESSONS.find((l) => l.id === lessonId);
     const base = lesson?.xp ?? 20;
     const perfect = total > 0 && correct === total;

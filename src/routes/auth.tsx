@@ -10,10 +10,10 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Finly Admin" },
-      { name: "description", content: "Sign in to manage Finly lessons, quizzes and settings." },
-      { property: "og:title", content: "Sign in — Finly Admin" },
-      { property: "og:description", content: "Sign in to manage Finly lessons, quizzes and settings." },
+      { title: "Sign in — Finly" },
+      { name: "description", content: "Sign in to Finly to save your progress, XP and streak." },
+      { property: "og:title", content: "Sign in — Finly" },
+      { property: "og:description", content: "Sign in to Finly to save your progress, XP and streak." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -29,7 +29,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin", replace: true });
+      if (data.session) navigate({ to: "/profile", replace: true });
     });
   }, [navigate]);
 
@@ -40,15 +40,15 @@ function AuthPage() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/admin", replace: true });
+        navigate({ to: "/profile", replace: true });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
+          options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/admin", replace: true });
+        if (data.session) navigate({ to: "/profile", replace: true });
         else toast.success("Check your email to confirm your account.");
       }
     } catch (err) {
@@ -58,6 +58,18 @@ function AuthPage() {
     }
   }
 
+  async function forgotPassword() {
+    if (!email) {
+      toast.error("Enter your email first, then tap “Forgot password?”");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success("Password reset link sent — check your email.");
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6">
@@ -65,10 +77,10 @@ function AuthPage() {
           ← Back to Finly
         </Link>
         <h1 className="mt-4 font-display text-2xl font-extrabold">
-          {mode === "signin" ? "Admin sign in" : "Create admin account"}
+          {mode === "signin" ? "Welcome back to Finly" : "Create your Finly account"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          This area is for the site owner. The first account created becomes the administrator.
+          Save your XP, streak and completed lessons across devices.
         </p>
 
         <form onSubmit={submit} className="mt-5 space-y-4">
@@ -92,6 +104,16 @@ function AuthPage() {
           </Button>
         </form>
 
+        {mode === "signin" ? (
+          <button
+            type="button"
+            className="mt-3 w-full text-sm font-semibold text-muted-foreground hover:text-foreground"
+            onClick={() => void forgotPassword()}
+          >
+            Forgot password?
+          </button>
+        ) : null}
+
         <button
           type="button"
           className="mt-4 w-full text-sm font-semibold text-primary"
@@ -99,6 +121,13 @@ function AuthPage() {
         >
           {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
         </button>
+
+        <Link
+          to="/learn"
+          className="mt-4 block text-center text-sm font-semibold text-muted-foreground hover:text-foreground"
+        >
+          Continue as guest
+        </Link>
       </div>
     </main>
   );
