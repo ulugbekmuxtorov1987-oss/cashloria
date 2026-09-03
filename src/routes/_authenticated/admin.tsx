@@ -79,7 +79,7 @@ function AdminPage() {
         supabase
           .from("analytics_events")
           .select("id", { count: "exact", head: true })
-          .eq("event_type", "lesson_complete"),
+          .eq("event_type", "lesson_completed"),
       ]);
       if (recent.error) throw recent.error;
 
@@ -88,7 +88,7 @@ function AdminPage() {
       const uniq = (rs: EventRow[]) => new Set(rs.map((r) => r.visitor_id ?? "anon")).size;
 
       const views = rows.filter((r) => r.event_type === "page_view");
-      const completes = rows.filter((r) => r.event_type === "lesson_complete");
+      const completes = rows.filter((r) => r.event_type === "lesson_completed");
       const quizzes = rows.filter((r) => r.event_type === "quiz_attempt");
 
       return {

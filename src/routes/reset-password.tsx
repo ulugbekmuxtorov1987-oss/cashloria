@@ -28,7 +28,15 @@ function ResetPasswordPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setReady(!!data.session));
+    // The recovery session can arrive after mount (token exchange from the
+    // email link), so listen for auth events as well as checking once.
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) setReady(true);
+    });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   async function submit(e: React.FormEvent) {

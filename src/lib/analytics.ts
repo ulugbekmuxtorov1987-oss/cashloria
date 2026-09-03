@@ -36,7 +36,8 @@ export function trackPageView(path: string) {
 }
 
 export function trackLessonComplete(lessonSlug: string) {
-  void log("lesson_complete", { lesson_slug: lessonSlug });
+  // Must match the analytics_events event_type CHECK constraint.
+  void log("lesson_completed", { lesson_slug: lessonSlug });
 }
 
 export function trackQuizAttempt(lessonSlug: string) {
