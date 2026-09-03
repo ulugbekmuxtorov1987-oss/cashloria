@@ -54,18 +54,30 @@ function LibraryPage() {
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {lessons.map((l) => (
-          <Link
-            key={l.id}
-            to="/learn/$lessonId"
-            params={{ lessonId: l.id }}
-            className="rounded-2xl border border-border bg-card p-4 transition hover:shadow-md"
-          >
-            <p className="text-xl">{l.emoji}</p>
-            <p className="mt-1 font-semibold">{l.title}</p>
-            <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{l.summary}</p>
-          </Link>
-        ))}
+        {lessons.map((l) => {
+          const cardClass = "rounded-2xl border border-border bg-card p-4 transition";
+          if (!isUnlocked(l.id)) {
+            return (
+              <div key={l.id} className={`${cardClass} opacity-60`}>
+                <p className="text-xl">{l.emoji}</p>
+                <p className="mt-1 font-semibold">{l.title}</p>
+                <p className="mt-2 text-xs text-muted-foreground">🔒 Locked — finish earlier lessons first</p>
+              </div>
+            );
+          }
+          return (
+            <Link
+              key={l.id}
+              to="/learn/$lessonId"
+              params={{ lessonId: l.id }}
+              className={`${cardClass} hover:shadow-md`}
+            >
+              <p className="text-xl">{l.emoji}</p>
+              <p className="mt-1 font-semibold">{l.title}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{l.summary}</p>
+            </Link>
+          );
+        })}
         {lessons.length === 0 ? <p className="text-sm text-muted-foreground">No lessons match that search.</p> : null}
       </div>
 

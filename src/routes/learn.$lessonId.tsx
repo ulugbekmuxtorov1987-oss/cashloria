@@ -37,7 +37,7 @@ function LessonPage() {
   const { lessonId } = Route.useParams();
   const lesson = getLesson(lessonId);
   const navigate = useNavigate();
-  const { state, completeLesson, toggleChallenge } = useProgress();
+  const { state, completeLesson, toggleChallenge, isUnlocked } = useProgress();
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -49,6 +49,20 @@ function LessonPage() {
         <h1 className="font-display text-2xl font-bold">Lesson not found</h1>
         <Link to="/learn" className="mt-4 inline-block font-semibold text-primary">
           Back to the path
+        </Link>
+      </AppShell>
+    );
+  }
+
+  if (!isUnlocked(lesson.id)) {
+    return (
+      <AppShell>
+        <h1 className="font-display text-2xl font-bold">🔒 This lesson is locked</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Finish the previous lesson on the learning path to unlock “{lesson.title}”.
+        </p>
+        <Link to="/learn" className="mt-4 inline-block font-semibold text-primary">
+          Go to the learning path
         </Link>
       </AppShell>
     );
