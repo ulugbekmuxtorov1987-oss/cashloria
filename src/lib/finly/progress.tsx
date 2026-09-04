@@ -2,8 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { ALL_LESSONS, CATEGORIES, FREE_LESSONS, LESSON_ORDER } from "./curriculum";
 import { ACHIEVEMENTS } from "./achievements";
 import type { CountryCode, LanguageCode } from "./types";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "finly.progress.v1";
+
 
 export type LessonResult = { correct: number; total: number; completedAt: string; xp: number };
 
