@@ -2,8 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { ALL_LESSONS, CATEGORIES, FREE_LESSONS, LESSON_ORDER } from "./curriculum";
 import { ACHIEVEMENTS } from "./achievements";
 import type { CountryCode, LanguageCode } from "./types";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "finly.progress.v1";
+
 
 export type LessonResult = { correct: number; total: number; completedAt: string; xp: number };
 
@@ -63,6 +65,69 @@ function dayDiff(a: string, b: string) {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000);
 }
 
+/** Shape the DB row into progress state (only learning data — nothing sensitive). */
+function rowToState(row: Record<string, unknown>): ProgressState {
+  const streak = (row['streak'] ?? {}) as ProgressState["streak"];
+  return {
+    xp: Number(row['xp'] ?? 0),
+    lessons: (row['lessons'] ?? {}) as ProgressState["lessons"],
+    challenges: Array.isArray(row['challenges']) ? (row['challenges'] as string[]) : [],
+    achievements: Array.isArray(row['achievements']) ? (row['achievements'] as string[]) : [],
+    streak: { ...initialState.streak, ...streak },
+    country: (row['country'] as CountryCode) ?? initialState.country,
+    language: (row['language'] as LanguageCode) ?? initialState.language,
+  };
+}
+
+function stateToRow(s: ProgressState) {
+  return {
+    xp: s.xp,
+    lessons: s.lessons,
+    challenges: s.challenges,
+    achievements: s.achievements,
+    streak: s.streak,
+    country: s.country,
+    language: s.language,
+  };
+}
+
+/**
+ * Non-destructive merge: keeps the best of both sides so signing in on a new
+ * device never wipes progress, and re-syncing never awards XP twice.
+ */
+function mergeProgress(local: ProgressState, remote: ProgressState): ProgressState {
+  const lessons: ProgressState["lessons"] = { ...remote.lessons };
+  for (const [id, l] of Object.entries(local.lessons)) {
+    const r = lessons[id];
+    lessons[id] = r
+      ? {
+          correct: Math.max(l.correct, r.correct),
+          total: Math.max(l.total, r.total),
+          completedAt: l.completedAt > r.completedAt ? l.completedAt : r.completedAt,
+          xp: Math.max(l.xp, r.xp),
+        }
+      : l;
+  }
+  const union = (a: string[], b: string[]) => [...new Set([...a, ...b])];
+  const lastDay =
+    (local.streak.lastDay ?? "") > (remote.streak.lastDay ?? "") ? local.streak.lastDay : remote.streak.lastDay;
+  return {
+    xp: Math.max(local.xp, remote.xp),
+    lessons,
+    challenges: union(local.challenges, remote.challenges),
+    achievements: union(local.achievements, remote.achievements),
+    streak: {
+      count: Math.max(local.streak.count, remote.streak.count),
+      best: Math.max(local.streak.best, remote.streak.best),
+      lastDay,
+    },
+    country: local.country !== initialState.country ? local.country : remote.country,
+    language: local.language !== initialState.language ? local.language : remote.language,
+  };
+}
+
+
+
 type Ctx = {
   state: ProgressState;
   ready: boolean;
@@ -110,6 +175,54 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       /* storage unavailable */
     }
   }, [state, ready]);
+
+  // ---- Cloud sync (signed-in users only; guests stay on localStorage) ----
+  const [userId, setUserId] = useState<string | null>(null);
+  const hydratedFor = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!ready) return;
+    let active = true;
+
+    async function hydrate(uid: string | null) {
+      setUserId(uid);
+      if (!uid || hydratedFor.current === uid) return;
+      hydratedFor.current = uid;
+      const { data } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
+      if (!active) return;
+      const merged = data ? mergeProgress(stateRef.current, rowToState(data)) : stateRef.current;
+      setState(merged);
+      await supabase.from("user_progress").upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+    }
+
+    void supabase.auth.getSession().then(({ data }) => hydrate(data.session?.user.id ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        hydratedFor.current = null;
+        setUserId(null);
+        return;
+      }
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "USER_UPDATED") {
+        void hydrate(session?.user.id ?? null);
+      }
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready || !userId || hydratedFor.current !== userId) return;
+    const timer = setTimeout(() => {
+      void supabase
+        .from("user_progress")
+        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [state, ready, userId]);
+
 
   const isUnlocked = useCallback(
     (lessonId: string) => {

@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CountryCode, LanguageCode } from "@/lib/finly/types";
+import { useSiteSettings } from "@/lib/site-content";
+
 
 const NAV = [
   { to: "/learn", label: "Learn", icon: GraduationCap },
@@ -29,15 +31,27 @@ const LANGUAGES: { code: LanguageCode; label: string; ready: boolean }[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { state, setCountry, setLanguage } = useProgress();
   const rank = rankFor(state.xp);
+  const { data: settings } = useSiteSettings();
+  const siteName = settings?.site_name?.trim() || "Finly";
+  const socials = [
+    settings?.instagram_url ? { label: "Instagram", url: settings.instagram_url } : null,
+    settings?.telegram_url ? { label: "Telegram", url: settings.telegram_url } : null,
+    ...(settings?.extra_links ?? []).filter((l) => l.label && l.url),
+  ].filter(Boolean) as { label: string; url: string }[];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">₣</span>
-            <span>Finly</span>
+            {settings?.logo_url ? (
+              <img src={settings.logo_url} alt={`${siteName} logo`} className="h-8 w-8 rounded-xl object-cover" />
+            ) : (
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">₣</span>
+            )}
+            <span>{siteName}</span>
           </Link>
+
 
           <nav className="ml-4 hidden items-center gap-1 md:flex">
             {NAV.map((item) => (
@@ -72,13 +86,36 @@ export function AppShell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border bg-card/60 pb-24 pt-8 md:pb-8">
         <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-display text-base font-bold">Finly — learn money, one lesson a day</p>
+            <p className="font-display text-base font-bold">
+              {siteName} — {settings?.site_description?.trim() || "learn money, one lesson a day"}
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Finly provides general educational information about personal finance. It is <strong>not</strong>{" "}
+              {siteName} provides general educational information about personal finance. It is <strong>not</strong>{" "}
               personalized financial, investment, tax or legal advice. Rules and products differ by country — always
               check official sources for your own situation and consider a qualified professional.
             </p>
+            {(settings?.contact_email || socials.length > 0) && (
+              <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                {settings?.contact_email && (
+                  <a href={`mailto:${settings.contact_email}`} className="hover:text-foreground">
+                    {settings.contact_email}
+                  </a>
+                )}
+                {socials.map((l) => (
+                  <a
+                    key={l.url}
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </p>
+            )}
           </div>
+
           <div className="text-sm">
             <p className="mb-2 font-semibold">Guides</p>
             <ul className="space-y-1 text-muted-foreground">

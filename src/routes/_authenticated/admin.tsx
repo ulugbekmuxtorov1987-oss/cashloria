@@ -4,6 +4,10 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LessonEditor } from "@/components/admin/LessonEditor";
+import { LevelsPanel } from "@/components/admin/LevelsPanel";
+import { SettingsPanel } from "@/components/admin/SettingsPanel";
+import { ContentPanel } from "@/components/admin/ContentPanel";
+
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -266,7 +270,29 @@ function AdminPage() {
           </div>
         </section>
       )}
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Levels</h2>
+        <div className="mt-3">
+          <LevelsPanel />
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Website settings</h2>
+        <div className="mt-3">
+          <SettingsPanel />
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Site content</h2>
+        <div className="mt-3">
+          <ContentPanel />
+        </div>
+      </section>
     </main>
+
   );
 }
 
