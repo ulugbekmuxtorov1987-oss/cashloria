@@ -266,7 +266,29 @@ function AdminPage() {
           </div>
         </section>
       )}
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Levels</h2>
+        <div className="mt-3">
+          <LevelsPanel />
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Website settings</h2>
+        <div className="mt-3">
+          <SettingsPanel />
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-bold">Site content</h2>
+        <div className="mt-3">
+          <ContentPanel />
+        </div>
+      </section>
     </main>
+
   );
 }
 
