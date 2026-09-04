@@ -4,6 +4,10 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LessonEditor } from "@/components/admin/LessonEditor";
+import { LevelsPanel } from "@/components/admin/LevelsPanel";
+import { SettingsPanel } from "@/components/admin/SettingsPanel";
+import { ContentPanel } from "@/components/admin/ContentPanel";
+
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin")({
