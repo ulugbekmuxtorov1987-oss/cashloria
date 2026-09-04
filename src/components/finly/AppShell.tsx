@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CountryCode, LanguageCode } from "@/lib/finly/types";
+import { useSiteSettings } from "@/lib/site-content";
+
 
 const NAV = [
   { to: "/learn", label: "Learn", icon: GraduationCap },
