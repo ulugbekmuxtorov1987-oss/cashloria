@@ -111,6 +111,54 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     }
   }, [state, ready]);
 
+  // ---- Cloud sync (signed-in users only; guests stay on localStorage) ----
+  const [userId, setUserId] = useState<string | null>(null);
+  const hydratedFor = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!ready) return;
+    let active = true;
+
+    async function hydrate(uid: string | null) {
+      setUserId(uid);
+      if (!uid || hydratedFor.current === uid) return;
+      hydratedFor.current = uid;
+      const { data } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
+      if (!active) return;
+      const merged = data ? mergeProgress(stateRef.current, rowToState(data)) : stateRef.current;
+      setState(merged);
+      await supabase.from("user_progress").upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+    }
+
+    void supabase.auth.getSession().then(({ data }) => hydrate(data.session?.user.id ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        hydratedFor.current = null;
+        setUserId(null);
+        return;
+      }
+      if (event === "SIGNED_IN" || event === "INITIAL_SESSION" || event === "USER_UPDATED") {
+        void hydrate(session?.user.id ?? null);
+      }
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready || !userId || hydratedFor.current !== userId) return;
+    const timer = setTimeout(() => {
+      void supabase
+        .from("user_progress")
+        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [state, ready, userId]);
+
+
   const isUnlocked = useCallback(
     (lessonId: string) => {
       const index = LESSON_ORDER.indexOf(lessonId);
