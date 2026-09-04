@@ -29,15 +29,27 @@ const LANGUAGES: { code: LanguageCode; label: string; ready: boolean }[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { state, setCountry, setLanguage } = useProgress();
   const rank = rankFor(state.xp);
+  const { data: settings } = useSiteSettings();
+  const siteName = settings?.site_name?.trim() || "Finly";
+  const socials = [
+    settings?.instagram_url ? { label: "Instagram", url: settings.instagram_url } : null,
+    settings?.telegram_url ? { label: "Telegram", url: settings.telegram_url } : null,
+    ...(settings?.extra_links ?? []).filter((l) => l.label && l.url),
+  ].filter(Boolean) as { label: string; url: string }[];
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">₣</span>
-            <span>Finly</span>
+            {settings?.logo_url ? (
+              <img src={settings.logo_url} alt={`${siteName} logo`} className="h-8 w-8 rounded-xl object-cover" />
+            ) : (
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">₣</span>
+            )}
+            <span>{siteName}</span>
           </Link>
+
 
           <nav className="ml-4 hidden items-center gap-1 md:flex">
             {NAV.map((item) => (
