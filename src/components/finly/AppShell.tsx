@@ -84,13 +84,36 @@ export function AppShell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border bg-card/60 pb-24 pt-8 md:pb-8">
         <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-display text-base font-bold">Finly — learn money, one lesson a day</p>
+            <p className="font-display text-base font-bold">
+              {siteName} — {settings?.site_description?.trim() || "learn money, one lesson a day"}
+            </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Finly provides general educational information about personal finance. It is <strong>not</strong>{" "}
+              {siteName} provides general educational information about personal finance. It is <strong>not</strong>{" "}
               personalized financial, investment, tax or legal advice. Rules and products differ by country — always
               check official sources for your own situation and consider a qualified professional.
             </p>
+            {(settings?.contact_email || socials.length > 0) && (
+              <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                {settings?.contact_email && (
+                  <a href={`mailto:${settings.contact_email}`} className="hover:text-foreground">
+                    {settings.contact_email}
+                  </a>
+                )}
+                {socials.map((l) => (
+                  <a
+                    key={l.url}
+                    href={l.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground"
+                  >
+                    {l.label}
+                  </a>
+                ))}
+              </p>
+            )}
           </div>
+
           <div className="text-sm">
             <p className="mb-2 font-semibold">Guides</p>
             <ul className="space-y-1 text-muted-foreground">
