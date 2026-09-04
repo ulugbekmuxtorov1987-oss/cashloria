@@ -65,6 +65,69 @@ function dayDiff(a: string, b: string) {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000);
 }
 
+/** Shape the DB row into progress state (only learning data — nothing sensitive). */
+function rowToState(row: Record<string, unknown>): ProgressState {
+  const streak = (row['streak'] ?? {}) as ProgressState["streak"];
+  return {
+    xp: Number(row['xp'] ?? 0),
+    lessons: (row['lessons'] ?? {}) as ProgressState["lessons"],
+    challenges: Array.isArray(row['challenges']) ? (row['challenges'] as string[]) : [],
+    achievements: Array.isArray(row['achievements']) ? (row['achievements'] as string[]) : [],
+    streak: { ...initialState.streak, ...streak },
+    country: (row['country'] as CountryCode) ?? initialState.country,
+    language: (row['language'] as LanguageCode) ?? initialState.language,
+  };
+}
+
+function stateToRow(s: ProgressState) {
+  return {
+    xp: s.xp,
+    lessons: s.lessons,
+    challenges: s.challenges,
+    achievements: s.achievements,
+    streak: s.streak,
+    country: s.country,
+    language: s.language,
+  };
+}
+
+/**
+ * Non-destructive merge: keeps the best of both sides so signing in on a new
+ * device never wipes progress, and re-syncing never awards XP twice.
+ */
+function mergeProgress(local: ProgressState, remote: ProgressState): ProgressState {
+  const lessons: ProgressState["lessons"] = { ...remote.lessons };
+  for (const [id, l] of Object.entries(local.lessons)) {
+    const r = lessons[id];
+    lessons[id] = r
+      ? {
+          correct: Math.max(l.correct, r.correct),
+          total: Math.max(l.total, r.total),
+          completedAt: l.completedAt > r.completedAt ? l.completedAt : r.completedAt,
+          xp: Math.max(l.xp, r.xp),
+        }
+      : l;
+  }
+  const union = (a: string[], b: string[]) => [...new Set([...a, ...b])];
+  const lastDay =
+    (local.streak.lastDay ?? "") > (remote.streak.lastDay ?? "") ? local.streak.lastDay : remote.streak.lastDay;
+  return {
+    xp: Math.max(local.xp, remote.xp),
+    lessons,
+    challenges: union(local.challenges, remote.challenges),
+    achievements: union(local.achievements, remote.achievements),
+    streak: {
+      count: Math.max(local.streak.count, remote.streak.count),
+      best: Math.max(local.streak.best, remote.streak.best),
+      lastDay,
+    },
+    country: local.country !== initialState.country ? local.country : remote.country,
+    language: local.language !== initialState.language ? local.language : remote.language,
+  };
+}
+
+
+
 type Ctx = {
   state: ProgressState;
   ready: boolean;
