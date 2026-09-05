@@ -1,20 +1,26 @@
+import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 export const Route = createFileRoute("/simulators")({
-  head: () => ({
-    meta: [
-      { title: "Money Simulators — Budget, Compound Interest, Debt | Finly" },
-      {
-        name: "description",
-        content:
-          "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.",
-      },
-      { property: "og:title", content: "Money Simulators — Finly" },
-      { property: "og:description", content: "Interactive budget, investing, debt and emergency fund simulators." },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo('/simulators', "Money Simulators — Budget, Compound Interest, Debt | Finly", "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.");
+    return {
+      meta: [
+        { title: "Money Simulators — Budget, Compound Interest, Debt | Finly" },
+        {
+          name: "description",
+          content:
+            "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.",
+        },
+        { property: "og:title", content: "Money Simulators — Finly" },
+        { property: "og:description", content: "Interactive budget, investing, debt and emergency fund simulators." },
+      ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: Simulators,
 });
 

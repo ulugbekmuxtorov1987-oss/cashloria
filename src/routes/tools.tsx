@@ -1,20 +1,26 @@
+import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 export const Route = createFileRoute("/tools")({
-  head: () => ({
-    meta: [
-      { title: "Free Money Calculators — Savings, Loans, Inflation | Finly" },
-      {
-        name: "description",
-        content:
-          "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.",
-      },
-      { property: "og:title", content: "Free Money Calculators — Finly" },
-      { property: "og:description", content: "Savings, loan, inflation, net worth and budget calculators." },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo('/tools', "Free Money Calculators — Savings, Loans, Inflation | Finly", "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.");
+    return {
+      meta: [
+        { title: "Free Money Calculators — Savings, Loans, Inflation | Finly" },
+        {
+          name: "description",
+          content:
+            "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.",
+        },
+        { property: "og:title", content: "Free Money Calculators — Finly" },
+        { property: "og:description", content: "Savings, loan, inflation, net worth and budget calculators." },
+      ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: Tools,
 });
 
