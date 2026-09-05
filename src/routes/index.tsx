@@ -1,24 +1,30 @@
+import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { LEVELS, ALL_LESSONS } from "@/lib/finly/curriculum";
 import { useProgress, rankFor } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Finly — Learn Personal Finance in 5-Minute Lessons" },
-      {
-        name: "description",
-        content:
-          "Finly teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.",
-      },
-      { property: "og:title", content: "Finly — Learn Personal Finance in 5-Minute Lessons" },
-      {
-        property: "og:description",
-        content: "Short lessons, quizzes, streaks and real-world money simulators. Free financial education.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo('/', "Finly — Learn Personal Finance in 5-Minute Lessons", "Finly teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.");
+    return {
+      meta: [
+        { title: "Finly — Learn Personal Finance in 5-Minute Lessons" },
+        {
+          name: "description",
+          content:
+            "Finly teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.",
+        },
+        { property: "og:title", content: "Finly — Learn Personal Finance in 5-Minute Lessons" },
+        {
+          property: "og:description",
+          content: "Short lessons, quizzes, streaks and real-world money simulators. Free financial education.",
+        },
+      ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: Index,
 });
 

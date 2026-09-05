@@ -5,19 +5,24 @@ import { getLesson, nextLessonId } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
 import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
+import { publicSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/learn/$lessonId")({
   head: ({ params }) => {
     const lesson = getLesson(params.lessonId);
     const title = lesson ? `${lesson.title} — Finly Lesson` : "Lesson — Finly";
     const description = lesson?.summary ?? "An interactive personal finance lesson on Finly.";
+    const seo = publicSeo(`/learn/${params.lessonId}`, title, description, "article");
     return {
       meta: [
         { title },
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        ...seo.meta,
+        ...(lesson ? [] : [{ name: "robots", content: "noindex" }]),
       ],
+      links: seo.links,
     };
   },
   component: LessonPage,

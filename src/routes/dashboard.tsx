@@ -13,6 +13,7 @@ export const Route = createFileRoute("/dashboard")({
       },
       { property: "og:title", content: "Your Progress — Finly" },
       { property: "og:description", content: "XP, streaks, knowledge map and achievements." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: Dashboard,

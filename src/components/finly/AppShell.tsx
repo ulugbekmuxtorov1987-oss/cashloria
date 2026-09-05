@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { AccountMenu } from "@/components/finly/AccountMenu";
+import { SiteMeta } from "@/components/finly/SiteMeta";
 import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library } from "lucide-react";
 import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
@@ -41,6 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SiteMeta />
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">

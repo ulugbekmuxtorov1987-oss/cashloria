@@ -1,19 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Guide } from "@/components/finly/Guide";
+import { publicSeo } from "@/lib/seo";
 
 const TITLE = "What Is Compound Interest? Examples and the Rule of 72";
 const DESC =
   "Compound interest is interest earned on interest. See how it grows savings over time — and how it makes credit card debt expensive.";
 
 export const Route = createFileRoute("/what-is-compound-interest")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo("/what-is-compound-interest", TITLE, DESC, "article");
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESC },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESC },
+        ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: () => (
     <Guide
       title="What is compound interest?"

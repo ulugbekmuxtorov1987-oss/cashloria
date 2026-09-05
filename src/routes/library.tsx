@@ -1,3 +1,4 @@
+import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
@@ -5,17 +6,22 @@ import { ALL_LESSONS, CATEGORIES } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/library")({
-  head: () => ({
-    meta: [
-      { title: "Money Library — Search Every Finly Lesson" },
-      {
-        name: "description",
-        content: "Browse and search every Finly lesson by topic: budgeting, banking, credit, saving, investing, taxes.",
-      },
-      { property: "og:title", content: "Money Library — Finly" },
-      { property: "og:description", content: "Search all Finly lessons by topic and keyword." },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo('/library', "Money Library — Search Every Finly Lesson", "Browse and search every Finly lesson by topic: budgeting, banking, credit, saving, investing, taxes.");
+    return {
+      meta: [
+        { title: "Money Library — Search Every Finly Lesson" },
+        {
+          name: "description",
+          content: "Browse and search every Finly lesson by topic: budgeting, banking, credit, saving, investing, taxes.",
+        },
+        { property: "og:title", content: "Money Library — Finly" },
+        { property: "og:description", content: "Search all Finly lessons by topic and keyword." },
+      ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: LibraryPage,
 });
 

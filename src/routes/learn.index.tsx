@@ -1,3 +1,4 @@
+import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
@@ -5,17 +6,22 @@ import { LEVELS } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/learn/")({
-  head: () => ({
-    meta: [
-      { title: "Learning Path — Finly Money Lessons" },
-      {
-        name: "description",
-        content: "Follow Finly's five-level path: money basics, budgeting, saving, credit, investing and planning.",
-      },
-      { property: "og:title", content: "Learning Path — Finly Money Lessons" },
-      { property: "og:description", content: "Five levels of short, interactive personal finance lessons." },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo('/learn', "Learning Path — Finly Money Lessons", "Follow Finly's five-level path: money basics, budgeting, saving, credit, investing and planning.");
+    return {
+      meta: [
+        { title: "Learning Path — Finly Money Lessons" },
+        {
+          name: "description",
+          content: "Follow Finly's five-level path: money basics, budgeting, saving, credit, investing and planning.",
+        },
+        { property: "og:title", content: "Learning Path — Finly Money Lessons" },
+        { property: "og:description", content: "Five levels of short, interactive personal finance lessons." },
+      ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: LearnPage,
 });
 

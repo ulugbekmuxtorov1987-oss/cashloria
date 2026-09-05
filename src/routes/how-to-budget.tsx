@@ -1,19 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Guide } from "@/components/finly/Guide";
+import { publicSeo } from "@/lib/seo";
 
 const TITLE = "How to Budget: A Simple Monthly System That Sticks";
 const DESC =
   "Build a monthly budget in four steps: count your income, list fixed costs, cap flexible spending, and pay savings first.";
 
 export const Route = createFileRoute("/how-to-budget")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo("/how-to-budget", TITLE, DESC, "article");
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESC },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESC },
+        ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: () => (
     <Guide
       title="How to budget"

@@ -19,6 +19,7 @@ import { Route as HowToSaveMoneyRouteImport } from './routes/how-to-save-money'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as WhatIsCompoundInterestRouteImport } from './routes/what-is-compound-interest'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -76,6 +77,11 @@ const SimulatorsRoute = SimulatorsRouteImport.update({
   path: '/simulators',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tools': typeof ToolsRoute
   '/what-is-compound-interest': typeof WhatIsCompoundInterestRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/reset-password'
     | '/simulators'
+    | '/sitemap.xml'
     | '/tools'
     | '/what-is-compound-interest'
     | '/admin'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/reset-password'
     | '/simulators'
+    | '/sitemap.xml'
     | '/tools'
     | '/what-is-compound-interest'
     | '/admin'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/reset-password'
     | '/simulators'
+    | '/sitemap.xml'
     | '/tools'
     | '/what-is-compound-interest'
     | '/_authenticated/admin'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SimulatorsRoute: typeof SimulatorsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ToolsRoute: typeof ToolsRoute
   WhatIsCompoundInterestRoute: typeof WhatIsCompoundInterestRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
@@ -313,6 +326,13 @@ declare module '@tanstack/react-router' {
       path: '/simulators'
       fullPath: '/simulators'
       preLoaderRoute: typeof SimulatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tools': {
@@ -393,6 +413,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SimulatorsRoute: SimulatorsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ToolsRoute: ToolsRoute,
   WhatIsCompoundInterestRoute: WhatIsCompoundInterestRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,

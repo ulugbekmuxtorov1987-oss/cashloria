@@ -1,19 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Guide } from "@/components/finly/Guide";
+import { publicSeo } from "@/lib/seo";
 
 const TITLE = "How to Save Money: Practical Habits That Actually Work";
 const DESC =
   "Save more by automating transfers, building an emergency fund, cutting recurring costs and using a 24-hour rule on impulse buys.";
 
 export const Route = createFileRoute("/how-to-save-money")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo("/how-to-save-money", TITLE, DESC, "article");
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESC },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESC },
+        ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: () => (
     <Guide
       title="How to save money"
