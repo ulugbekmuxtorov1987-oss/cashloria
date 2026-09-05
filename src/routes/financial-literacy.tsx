@@ -1,19 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Guide } from "@/components/finly/Guide";
+import { publicSeo } from "@/lib/seo";
 
 const TITLE = "What Is Financial Literacy? A Plain-English Guide";
 const DESC =
   "Financial literacy means understanding income, budgeting, saving, debt, investing and risk well enough to make confident money decisions.";
 
 export const Route = createFileRoute("/financial-literacy")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
-    ],
-  }),
+  head: () => {
+    const seo = publicSeo("/financial-literacy", TITLE, DESC, "article");
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESC },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESC },
+        ...seo.meta,
+      ],
+      links: seo.links,
+    };
+  },
   component: () => (
     <Guide
       title="What is financial literacy?"
