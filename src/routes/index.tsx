@@ -1,8 +1,18 @@
 import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
+import { DecorShapes, HeroFinanceArt, MiniSpark } from "@/components/finly/Illustrations";
+import { PiggyBank, CreditCard, LineChart, Wallet } from "lucide-react";
 import { LEVELS, ALL_LESSONS } from "@/lib/finly/curriculum";
 import { useProgress, rankFor } from "@/lib/finly/progress";
+
+const FEATURES = [
+  { title: "Budgeting", text: "Give every pound or dollar a job with simple monthly plans.", icon: Wallet, spark: "2,22 18,16 34,18 50,10 66,12 78,6" },
+  { title: "Saving", text: "Build an emergency fund and hit goals without willpower battles.", icon: PiggyBank, spark: "2,24 18,20 34,15 50,12 66,8 78,4" },
+  { title: "Credit", text: "Understand interest, scores and how to escape expensive debt.", icon: CreditCard, spark: "2,6 18,12 34,10 50,17 66,20 78,24" },
+  { title: "Investing", text: "Compound growth, risk and index funds explained plainly.", icon: LineChart, spark: "2,25 18,21 34,17 50,11 66,9 78,3" },
+] as const;
+
 
 export const Route = createFileRoute("/")({
   head: () => {

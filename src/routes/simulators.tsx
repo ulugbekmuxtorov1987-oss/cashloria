@@ -29,8 +29,17 @@ const money = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits
 function Simulators() {
   return (
     <AppShell>
-      <h1 className="font-display text-3xl font-extrabold">Simulators</h1>
-      <p className="mt-2 text-muted-foreground">Change the numbers and see what happens to your money.</p>
+      <div className="flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-soft text-primary">
+          <FlaskConical className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <div>
+          <h1 className="font-display text-3xl font-extrabold">Simulators</h1>
+          <p className="mt-1 text-muted-foreground">Change the numbers and see what happens to your money.</p>
+        </div>
+      </div>
+      <DecorShapes className="mt-4 h-12 w-full opacity-60" />
+
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         <BudgetSim />
