@@ -1,8 +1,18 @@
 import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
+import { DecorShapes, HeroFinanceArt, MiniSpark } from "@/components/finly/Illustrations";
+import { PiggyBank, CreditCard, LineChart, Wallet } from "lucide-react";
 import { LEVELS, ALL_LESSONS } from "@/lib/finly/curriculum";
 import { useProgress, rankFor } from "@/lib/finly/progress";
+
+const FEATURES = [
+  { title: "Budgeting", text: "Give every pound or dollar a job with simple monthly plans.", icon: Wallet, spark: "2,22 18,16 34,18 50,10 66,12 78,6" },
+  { title: "Saving", text: "Build an emergency fund and hit goals without willpower battles.", icon: PiggyBank, spark: "2,24 18,20 34,15 50,12 66,8 78,4" },
+  { title: "Credit", text: "Understand interest, scores and how to escape expensive debt.", icon: CreditCard, spark: "2,6 18,12 34,10 50,17 66,20 78,24" },
+  { title: "Investing", text: "Compound growth, risk and index funds explained plainly.", icon: LineChart, spark: "2,25 18,21 34,17 50,11 66,9 78,3" },
+] as const;
+
 
 export const Route = createFileRoute("/")({
   head: () => {
@@ -34,24 +44,30 @@ function Index() {
 
   return (
     <AppShell>
-      <section className="rounded-3xl bg-primary-soft px-6 py-10 text-center md:py-14">
-        <h1 className="font-display text-3xl font-extrabold md:text-5xl">
-          Learn money the way you'd learn a language
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          {ALL_LESSONS.length} bite-sized lessons across {LEVELS.length} levels. Answer quizzes, earn XP, keep your
-          streak alive and try real-world simulators.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/learn"
-            className="rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground transition hover:opacity-90"
-          >
-            Start learning
-          </Link>
-          <Link to="/simulators" className="rounded-full border border-border bg-background px-6 py-3 font-bold">
-            Try a simulator
-          </Link>
+      <section className="relative overflow-hidden rounded-3xl bg-primary-soft px-6 py-10 md:py-14">
+        <DecorShapes className="pointer-events-none absolute -top-2 left-0 h-16 w-full opacity-70" />
+        <div className="relative grid items-center gap-8 md:grid-cols-[1.1fr_1fr]">
+          <div className="text-center md:text-left">
+            <h1 className="font-display text-3xl font-extrabold md:text-5xl">
+              Learn money the way you'd learn a language
+            </h1>
+            <p className="mt-4 max-w-2xl text-muted-foreground">
+              {ALL_LESSONS.length} bite-sized lessons across {LEVELS.length} levels. Answer quizzes, earn XP, keep your
+              streak alive and try real-world simulators.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
+              <Link
+                to="/learn"
+                className="rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground transition hover:opacity-90"
+              >
+                Start learning
+              </Link>
+              <Link to="/simulators" className="rounded-full border border-border bg-background px-6 py-3 font-bold">
+                Try a simulator
+              </Link>
+            </div>
+          </div>
+          <HeroFinanceArt className="mx-auto h-44 w-full max-w-sm md:h-56" />
         </div>
       </section>
 
@@ -60,6 +76,23 @@ function Index() {
         <Stat label="Lessons completed" value={`${stats.lessonsCompleted} / ${stats.totalLessons}`} />
         <Stat label="Quiz accuracy" value={`${stats.accuracy}%`} />
       </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-2xl font-bold">What you'll master</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="rounded-2xl border border-border bg-card p-5">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary">
+                <f.icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <p className="mt-3 font-display text-lg font-bold">{f.title}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{f.text}</p>
+              <MiniSpark points={f.spark} className="mt-3 h-7 w-20 text-accent" />
+            </div>
+          ))}
+        </div>
+      </section>
+
 
       <section className="mt-10">
         <h2 className="font-display text-2xl font-bold">The path</h2>

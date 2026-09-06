@@ -2,6 +2,8 @@ import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
+import { DecorShapes } from "@/components/finly/Illustrations";
+import { Calculator } from "lucide-react";
 
 export const Route = createFileRoute("/tools")({
   head: () => {
@@ -29,9 +31,18 @@ const money = (n: number) => (Number.isFinite(n) ? n.toLocaleString(undefined, {
 function Tools() {
   return (
     <AppShell>
-      <h1 className="font-display text-3xl font-extrabold">Calculators</h1>
-      <p className="mt-2 text-muted-foreground">Small tools for everyday money decisions.</p>
+      <div className="flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent-soft text-accent-foreground">
+          <Calculator className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <div>
+          <h1 className="font-display text-3xl font-extrabold">Calculators</h1>
+          <p className="mt-1 text-muted-foreground">Small tools for everyday money decisions.</p>
+        </div>
+      </div>
+      <DecorShapes className="mt-4 h-12 w-full opacity-60" />
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
+
         <SavingsGoal />
         <LoanCalc />
         <Inflation />

@@ -1,6 +1,7 @@
 import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Lock } from "lucide-react";
+import { Lock, GraduationCap } from "lucide-react";
+import { DecorShapes } from "@/components/finly/Illustrations";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { LEVELS } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
@@ -30,8 +31,17 @@ function LearnPage() {
 
   return (
     <AppShell>
-      <h1 className="font-display text-3xl font-extrabold">Learning path</h1>
-      <p className="mt-2 text-muted-foreground">Finish a lesson to unlock the next one.</p>
+      <div className="flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-soft text-primary">
+          <GraduationCap className="h-6 w-6" aria-hidden="true" />
+        </span>
+        <div>
+          <h1 className="font-display text-3xl font-extrabold">Learning path</h1>
+          <p className="mt-1 text-muted-foreground">Finish a lesson to unlock the next one.</p>
+        </div>
+      </div>
+      <DecorShapes className="mt-4 h-12 w-full opacity-60" />
+
 
       <div className="mt-8 space-y-10">
         {LEVELS.map((level) => (
