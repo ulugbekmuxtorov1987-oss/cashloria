@@ -2,6 +2,8 @@ import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
+import { DecorShapes } from "@/components/finly/Illustrations";
+import { FlaskConical } from "lucide-react";
 
 export const Route = createFileRoute("/simulators")({
   head: () => {

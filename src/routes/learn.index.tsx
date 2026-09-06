@@ -1,6 +1,7 @@
 import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Lock } from "lucide-react";
+import { Lock, GraduationCap } from "lucide-react";
+import { DecorShapes } from "@/components/finly/Illustrations";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { LEVELS } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
