@@ -27,6 +27,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnLessonIdRouteImport } from './routes/learn.$lessonId'
+import { Route as ApiPublicIndexnowRouteImport } from './routes/api/public/indexnow'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -117,6 +118,11 @@ const LearnLessonIdRoute = LearnLessonIdRouteImport.update({
   path: '/learn/$lessonId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIndexnowRoute = ApiPublicIndexnowRouteImport.update({
+  id: '/api/public/indexnow',
+  path: '/api/public/indexnow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
+  '/api/public/indexnow': typeof ApiPublicIndexnowRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -155,6 +162,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn': typeof LearnIndexRoute
+  '/api/public/indexnow': typeof ApiPublicIndexnowRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/learn/$lessonId': typeof LearnLessonIdRoute
   '/learn/': typeof LearnIndexRoute
+  '/api/public/indexnow': typeof ApiPublicIndexnowRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/learn/$lessonId'
     | '/learn/'
+    | '/api/public/indexnow'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/learn/$lessonId'
     | '/learn'
+    | '/api/public/indexnow'
   id:
     | '__root__'
     | '/'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/learn/$lessonId'
     | '/learn/'
+    | '/api/public/indexnow'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   WhatIsCompoundInterestRoute: typeof WhatIsCompoundInterestRoute
   LearnLessonIdRoute: typeof LearnLessonIdRoute
   LearnIndexRoute: typeof LearnIndexRoute
+  ApiPublicIndexnowRoute: typeof ApiPublicIndexnowRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -384,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/indexnow': {
+      id: '/api/public/indexnow'
+      path: '/api/public/indexnow'
+      fullPath: '/api/public/indexnow'
+      preLoaderRoute: typeof ApiPublicIndexnowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -418,6 +438,7 @@ const rootRouteChildren: RootRouteChildren = {
   WhatIsCompoundInterestRoute: WhatIsCompoundInterestRoute,
   LearnLessonIdRoute: LearnLessonIdRoute,
   LearnIndexRoute: LearnIndexRoute,
+  ApiPublicIndexnowRoute: ApiPublicIndexnowRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
