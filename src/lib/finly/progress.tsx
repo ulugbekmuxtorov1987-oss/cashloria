@@ -3,8 +3,17 @@ import { ALL_LESSONS, CATEGORIES, FREE_LESSONS, LESSON_ORDER } from "./curriculu
 import { ACHIEVEMENTS } from "./achievements";
 import type { CountryCode, LanguageCode } from "./types";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "finly.progress.v1";
+
+/** Surface sync failures once per session instead of failing silently. */
+let syncProblemShown = false;
+function notifySyncProblem(message: string) {
+  if (syncProblemShown) return;
+  syncProblemShown = true;
+  toast.error(message);
+}
 
 
 export type LessonResult = { correct: number; total: number; completedAt: string; xp: number };
@@ -58,7 +67,9 @@ export function rankFor(xp: number) {
 }
 
 function todayKey(d = new Date()) {
-  return d.toISOString().slice(0, 10);
+  // Local calendar day: using UTC broke streaks for users ahead of/behind UTC.
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
 }
 
 function dayDiff(a: string, b: string) {
@@ -187,12 +198,25 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     async function hydrate(uid: string | null) {
       setUserId(uid);
       if (!uid || hydratedFor.current === uid) return;
-      hydratedFor.current = uid;
-      const { data } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
+      const { data, error } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
       if (!active) return;
+      if (error) {
+        // Do NOT mark as hydrated: a failed read must not let the debounced
+        // writer overwrite cloud progress with local-only state.
+        console.error("progress: cloud read failed", error);
+        notifySyncProblem("We couldn't load your saved progress. Your progress on this device is safe.");
+        return;
+      }
+      hydratedFor.current = uid;
       const merged = data ? mergeProgress(stateRef.current, rowToState(data)) : stateRef.current;
       setState(merged);
-      await supabase.from("user_progress").upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+      const { error: writeError } = await supabase
+        .from("user_progress")
+        .upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+      if (writeError) {
+        console.error("progress: cloud write failed", writeError);
+        notifySyncProblem("We couldn't save your progress to your account. It's still saved on this device.");
+      }
     }
 
     void supabase.auth.getSession().then(({ data }) => hydrate(data.session?.user.id ?? null));
@@ -218,7 +242,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const timer = setTimeout(() => {
       void supabase
         .from("user_progress")
-        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" });
+        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" })
+        .then(({ error }) => {
+          if (error) {
+            console.error("progress: cloud write failed", error);
+            notifySyncProblem("We couldn't save your progress to your account. It's still saved on this device.");
+          }
+        });
     }, 800);
     return () => clearTimeout(timer);
   }, [state, ready, userId]);
@@ -245,17 +275,20 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const lesson = ALL_LESSONS.find((l) => l.id === lessonId);
     const base = lesson?.xp ?? 20;
     const perfect = total > 0 && correct === total;
-    let xpGained = base + (perfect ? 10 : 0);
+    const today = todayKey();
+    // Computed up-front (not mutated inside the updater) so a double-invoked
+    // updater in StrictMode can never award the daily bonus twice.
+    const dailyBonus = stateRef.current.streak.lastDay !== today ? 5 : 0;
+    const alreadyDone = !!stateRef.current.lessons[lessonId];
+    const xpGained = alreadyDone ? 0 : base + (perfect ? 10 : 0) + dailyBonus;
     const unlockedAchievements: string[] = [];
 
     setState((prev) => {
-      const today = todayKey();
       let streak = prev.streak;
       if (streak.lastDay !== today) {
         const diff = streak.lastDay ? dayDiff(streak.lastDay, today) : null;
         const count = diff === 1 ? streak.count + 1 : 1;
         streak = { count, best: Math.max(count, streak.best), lastDay: today };
-        xpGained += 5;
       }
 
       const lessons = { ...prev.lessons };
@@ -276,10 +309,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         if (!wasComplete && nowComplete) bonus = 100;
       }
 
-      const xp = prev.xp + (already ? 0 : xpGained) + bonus;
+      const xp = Math.max(0, prev.xp + (already ? 0 : xpGained) + bonus);
       const next: ProgressState = { ...prev, xp, lessons, streak };
 
       const earned = ACHIEVEMENTS.filter((a) => !prev.achievements.includes(a.id) && a.check(next)).map((a) => a.id);
+      unlockedAchievements.length = 0;
       unlockedAchievements.push(...earned);
       return earned.length ? { ...next, achievements: [...prev.achievements, ...earned] } : next;
     });
@@ -288,10 +322,16 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleChallenge = useCallback((id: string) => {
+    // Same unlock gate as lessons: no XP for challenges on locked lessons.
+    const orderIndex = LESSON_ORDER.indexOf(id);
+    const prevLessonId = LESSON_ORDER[orderIndex - 1];
+    if (orderIndex >= FREE_LESSONS && !(prevLessonId && stateRef.current.lessons[prevLessonId])) return;
+
     setState((prev) => {
       const done = prev.challenges.includes(id);
       const challenges = done ? prev.challenges.filter((c) => c !== id) : [...prev.challenges, id];
-      const next = { ...prev, challenges, xp: prev.xp + (done ? -15 : 15) };
+      // XP must never go negative when a challenge is un-checked.
+      const next = { ...prev, challenges, xp: Math.max(0, prev.xp + (done ? -15 : 15)) };
       const earned = ACHIEVEMENTS.filter((a) => !prev.achievements.includes(a.id) && a.check(next)).map((a) => a.id);
       return earned.length ? { ...next, achievements: [...prev.achievements, ...earned] } : next;
     });

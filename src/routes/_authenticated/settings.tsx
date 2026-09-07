@@ -64,7 +64,7 @@ function SettingsPage() {
       toast.error("New passwords don't match");
       return;
     }
-    const email = profile?.email ?? user?.email;
+    const email = user?.email ?? profile?.email;
     if (!email) {
       toast.error("No email on this account");
       return;
@@ -94,7 +94,7 @@ function SettingsPage() {
   }
 
   async function sendReset() {
-    const email = profile?.email ?? user?.email;
+    const email = user?.email ?? profile?.email;
     if (!email) return;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
