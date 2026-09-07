@@ -58,7 +58,9 @@ export function rankFor(xp: number) {
 }
 
 function todayKey(d = new Date()) {
-  return d.toISOString().slice(0, 10);
+  // Local calendar day: using UTC broke streaks for users ahead of/behind UTC.
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
 }
 
 function dayDiff(a: string, b: string) {
