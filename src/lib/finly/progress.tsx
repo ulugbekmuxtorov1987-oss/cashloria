@@ -189,12 +189,25 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     async function hydrate(uid: string | null) {
       setUserId(uid);
       if (!uid || hydratedFor.current === uid) return;
-      hydratedFor.current = uid;
-      const { data } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
+      const { data, error } = await supabase.from("user_progress").select("*").eq("user_id", uid).maybeSingle();
       if (!active) return;
+      if (error) {
+        // Do NOT mark as hydrated: a failed read must not let the debounced
+        // writer overwrite cloud progress with local-only state.
+        console.error("progress: cloud read failed", error);
+        notifySyncProblem("We couldn't load your saved progress. Your progress on this device is safe.");
+        return;
+      }
+      hydratedFor.current = uid;
       const merged = data ? mergeProgress(stateRef.current, rowToState(data)) : stateRef.current;
       setState(merged);
-      await supabase.from("user_progress").upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+      const { error: writeError } = await supabase
+        .from("user_progress")
+        .upsert({ user_id: uid, ...stateToRow(merged) }, { onConflict: "user_id" });
+      if (writeError) {
+        console.error("progress: cloud write failed", writeError);
+        notifySyncProblem("We couldn't save your progress to your account. It's still saved on this device.");
+      }
     }
 
     void supabase.auth.getSession().then(({ data }) => hydrate(data.session?.user.id ?? null));
@@ -220,7 +233,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const timer = setTimeout(() => {
       void supabase
         .from("user_progress")
-        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" });
+        .upsert({ user_id: userId, ...stateToRow(state) }, { onConflict: "user_id" })
+        .then(({ error }) => {
+          if (error) {
+            console.error("progress: cloud write failed", error);
+            notifySyncProblem("We couldn't save your progress to your account. It's still saved on this device.");
+          }
+        });
     }, 800);
     return () => clearTimeout(timer);
   }, [state, ready, userId]);
