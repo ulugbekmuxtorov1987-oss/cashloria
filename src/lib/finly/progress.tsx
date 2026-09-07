@@ -247,17 +247,20 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const lesson = ALL_LESSONS.find((l) => l.id === lessonId);
     const base = lesson?.xp ?? 20;
     const perfect = total > 0 && correct === total;
-    let xpGained = base + (perfect ? 10 : 0);
+    const today = todayKey();
+    // Computed up-front (not mutated inside the updater) so a double-invoked
+    // updater in StrictMode can never award the daily bonus twice.
+    const dailyBonus = stateRef.current.streak.lastDay !== today ? 5 : 0;
+    const alreadyDone = !!stateRef.current.lessons[lessonId];
+    const xpGained = alreadyDone ? 0 : base + (perfect ? 10 : 0) + dailyBonus;
     const unlockedAchievements: string[] = [];
 
     setState((prev) => {
-      const today = todayKey();
       let streak = prev.streak;
       if (streak.lastDay !== today) {
         const diff = streak.lastDay ? dayDiff(streak.lastDay, today) : null;
         const count = diff === 1 ? streak.count + 1 : 1;
         streak = { count, best: Math.max(count, streak.best), lastDay: today };
-        xpGained += 5;
       }
 
       const lessons = { ...prev.lessons };
@@ -278,10 +281,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         if (!wasComplete && nowComplete) bonus = 100;
       }
 
-      const xp = prev.xp + (already ? 0 : xpGained) + bonus;
+      const xp = Math.max(0, prev.xp + (already ? 0 : xpGained) + bonus);
       const next: ProgressState = { ...prev, xp, lessons, streak };
 
       const earned = ACHIEVEMENTS.filter((a) => !prev.achievements.includes(a.id) && a.check(next)).map((a) => a.id);
+      unlockedAchievements.length = 0;
       unlockedAchievements.push(...earned);
       return earned.length ? { ...next, achievements: [...prev.achievements, ...earned] } : next;
     });
@@ -290,10 +294,16 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleChallenge = useCallback((id: string) => {
+    // Same unlock gate as lessons: no XP for challenges on locked lessons.
+    const orderIndex = LESSON_ORDER.indexOf(id);
+    const prevLessonId = LESSON_ORDER[orderIndex - 1];
+    if (orderIndex >= FREE_LESSONS && !(prevLessonId && stateRef.current.lessons[prevLessonId])) return;
+
     setState((prev) => {
       const done = prev.challenges.includes(id);
       const challenges = done ? prev.challenges.filter((c) => c !== id) : [...prev.challenges, id];
-      const next = { ...prev, challenges, xp: prev.xp + (done ? -15 : 15) };
+      // XP must never go negative when a challenge is un-checked.
+      const next = { ...prev, challenges, xp: Math.max(0, prev.xp + (done ? -15 : 15)) };
       const earned = ACHIEVEMENTS.filter((a) => !prev.achievements.includes(a.id) && a.check(next)).map((a) => a.id);
       return earned.length ? { ...next, achievements: [...prev.achievements, ...earned] } : next;
     });
