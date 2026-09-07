@@ -3,8 +3,17 @@ import { ALL_LESSONS, CATEGORIES, FREE_LESSONS, LESSON_ORDER } from "./curriculu
 import { ACHIEVEMENTS } from "./achievements";
 import type { CountryCode, LanguageCode } from "./types";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "finly.progress.v1";
+
+/** Surface sync failures once per session instead of failing silently. */
+let syncProblemShown = false;
+function notifySyncProblem(message: string) {
+  if (syncProblemShown) return;
+  syncProblemShown = true;
+  toast.error(message);
+}
 
 
 export type LessonResult = { correct: number; total: number; completedAt: string; xp: number };
