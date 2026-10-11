@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { getLesson, nextLessonId } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
 import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
+import { Button } from "@/components/ui/button";
+import { useLearningSession } from "@/lib/finly/learning-session";
 import { publicSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/learn/$lessonId")({
@@ -25,7 +27,7 @@ export const Route = createFileRoute("/learn/$lessonId")({
       links: seo.links,
     };
   },
-  component: LessonPage,
+  component: () => { const { lessonId } = Route.useParams(); return <LessonPage key={lessonId} />; },
 });
 
 function normalize(v: string) {
@@ -42,7 +44,10 @@ function LessonPage() {
   const { lessonId } = Route.useParams();
   const lesson = getLesson(lessonId);
   const navigate = useNavigate();
-  const { state, completeLesson, toggleChallenge, isUnlocked } = useProgress();
+  const { state, ready, completeLesson, toggleChallenge, isUnlocked } = useProgress();
+  const { rememberLesson } = useLearningSession();
+  const submitted = useRef(false);
+  useEffect(() => { if (ready && lesson && isUnlocked(lesson.id)) rememberLesson(lesson.id); }, [ready, lesson, isUnlocked, rememberLesson]);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
@@ -58,6 +63,8 @@ function LessonPage() {
       </AppShell>
     );
   }
+
+  if (!ready) return <AppShell><p role="status" className="py-12 text-muted-foreground">Loading your learning progress…</p></AppShell>;
 
   if (!isUnlocked(lesson.id)) {
     return (
@@ -77,12 +84,13 @@ function LessonPage() {
   const allChecked = lesson.quiz.every((q) => checked[q.id]);
 
   function finish() {
-    if (!lesson) return;
+    if (!lesson || !allChecked || submitted.current) return;
+    submitted.current = true;
     const correct = lesson.quiz.filter((q) => isCorrect(q, answers[q.id] ?? "")).length;
     const { xpGained } = completeLesson(lesson.id, correct, lesson.quiz.length);
     setResult({ correct, total: lesson.quiz.length, xpGained });
     trackQuizAttempt(lesson.id);
-    trackLessonComplete(lesson.id);
+    if (!state.lessons[lesson.id]) trackLessonComplete(lesson.id);
   }
 
   return (
@@ -140,21 +148,23 @@ function LessonPage() {
         </div>
 
         {!result ? (
-          <button
+          <Button
             onClick={finish}
             disabled={!allChecked}
             className="mt-5 rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground disabled:opacity-50"
           >
             Finish lesson
-          </button>
+          </Button>
         ) : (
-          <div className="mt-5 rounded-2xl border border-primary bg-primary-soft p-5">
+          <div role="status" className="mt-5 rounded-2xl border border-primary bg-primary-soft p-5">
             <p className="font-display text-lg font-bold">
-              {result.correct}/{result.total} correct · +{result.xpGained} XP 🎉
+              {result.correct}/{result.total} correct{result.xpGained ? ` · +${result.xpGained} XP` : " · Review complete"}
             </p>
+            <p className="mt-2 text-sm text-muted-foreground">Your best score is saved. Review the explanations or try again.</p>
             <div className="mt-3 flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => { setAnswers({}); setChecked({}); setResult(null); submitted.current = false; }}>Retry quiz</Button>
               {nextId ? (
-                <button
+                <Button
                   onClick={() => {
                     setAnswers({});
                     setChecked({});
@@ -164,7 +174,7 @@ function LessonPage() {
                   className="rounded-full bg-primary px-5 py-2.5 font-bold text-primary-foreground"
                 >
                   Next lesson
-                </button>
+                </Button>
               ) : null}
               <Link to="/dashboard" className="rounded-full border border-border bg-background px-5 py-2.5 font-bold">
                 See progress
@@ -177,12 +187,12 @@ function LessonPage() {
       <section className="mt-8 rounded-2xl border border-border bg-card p-5">
         <p className="font-display font-bold">💪 {lesson.challenge.title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{lesson.challenge.prompt}</p>
-        <button
+        <Button
           onClick={() => toggleChallenge(lesson.id)}
           className="mt-3 rounded-full border border-border px-4 py-2 text-sm font-semibold"
         >
           {state.challenges.includes(lesson.id) ? "✅ Challenge done (+15 XP)" : "Mark challenge done"}
-        </button>
+        </Button>
       </section>
 
       <section className="mt-6">
@@ -233,21 +243,25 @@ function QuestionCard({
           {question.options.map((opt, i) => {
             const selected = value === String(i);
             return (
-              <button
+              <Button
                 key={opt}
                 disabled={checked}
+                aria-pressed={selected}
+                variant="outline"
                 onClick={() => onChange(String(i))}
-                className={`rounded-xl border px-4 py-2.5 text-left text-sm transition ${
+                className={`h-auto min-h-11 justify-start whitespace-normal rounded-lg border px-4 py-2.5 text-left text-sm transition ${
                   selected ? "border-primary bg-primary-soft font-semibold" : "border-border bg-background"
                 }`}
               >
                 {opt}
-              </button>
+              </Button>
             );
           })}
         </div>
       ) : (
         <input
+          aria-label={question.prompt}
+          maxLength={120}
           value={value}
           disabled={checked}
           onChange={(e) => onChange(e.target.value)}
@@ -257,15 +271,15 @@ function QuestionCard({
       )}
 
       {!checked ? (
-        <button
+        <Button
           onClick={onCheck}
-          disabled={!value}
+          disabled={!value.trim()}
           className="mt-3 rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background disabled:opacity-40"
         >
           Check
-        </button>
+        </Button>
       ) : (
-        <p className={`mt-3 rounded-xl px-3 py-2 text-sm ${correct ? "bg-primary-soft" : "bg-muted"}`}>
+        <p role="status" className={`mt-3 rounded-xl px-3 py-2 text-sm ${correct ? "bg-primary-soft" : "bg-muted"}`}>
           {correct ? "✅ Correct. " : "❌ Not quite. "}
           {question.explanation}
         </p>

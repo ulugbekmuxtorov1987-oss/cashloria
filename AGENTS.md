@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Use semantic global design tokens and shared Button controls for Finly presentation; this keeps themes and accessibility consistent.
+- Store last-opened lesson as a device-local navigation preference separate from cloud learning results; this avoids altering completion data or the database schema.

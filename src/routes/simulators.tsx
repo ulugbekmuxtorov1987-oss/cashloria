@@ -2,7 +2,7 @@ import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
-import { DecorShapes } from "@/components/finly/Illustrations";
+
 import { FlaskConical } from "lucide-react";
 
 export const Route = createFileRoute("/simulators")({
@@ -26,12 +26,12 @@ export const Route = createFileRoute("/simulators")({
   component: Simulators,
 });
 
-const money = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+const money = (n: number) => Number.isFinite(n) ? n.toLocaleString("en", { maximumFractionDigits: 0 }) : "—";
 
 function Simulators() {
   return (
     <AppShell>
-      <div className="flex items-center gap-3">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-soft text-primary">
           <FlaskConical className="h-6 w-6" aria-hidden="true" />
         </span>
@@ -40,7 +40,7 @@ function Simulators() {
           <p className="mt-1 text-muted-foreground">Change the numbers and see what happens to your money.</p>
         </div>
       </div>
-      <DecorShapes className="mt-4 h-12 w-full opacity-60" />
+      
 
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -69,20 +69,24 @@ function Field({
   value,
   onChange,
   step = 1,
+  max = 100000000,
 }: {
   label: string;
   value: number;
   onChange: (n: number) => void;
   step?: number;
+  max?: number;
 }) {
   return (
     <label className="block text-sm">
       <span className="font-semibold">{label}</span>
       <input
         type="number"
+        min={0}
+        max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => { const n = Number(e.target.value); if (Number.isFinite(n)) onChange(Math.max(0, Math.min(max, n))); }}
         className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2"
       />
     </label>
@@ -90,7 +94,7 @@ function Field({
 }
 
 function Result({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-xl bg-primary-soft px-4 py-3 text-sm font-semibold">{children}</div>;
+  return <div aria-live="polite" className="rounded-lg bg-primary-soft px-4 py-3 text-sm font-semibold">{children}</div>;
 }
 
 function BudgetSim() {
@@ -124,12 +128,13 @@ function CompoundSim() {
     <Panel title="📈 Compound growth">
       <Field label="Starting amount" value={start} onChange={setStart} step={100} />
       <Field label="Monthly contribution" value={monthly} onChange={setMonthly} step={25} />
-      <Field label="Annual return %" value={rate} onChange={setRate} step={0.5} />
-      <Field label="Years" value={years} onChange={setYears} />
+      <Field label="Annual return %" value={rate} onChange={setRate} step={0.5} max={100} />
+      <Field label="Years" value={years} onChange={setYears} max={100} />
       <Result>
-        After {years} years: {money(future)} — you put in {money(contributed)}, growth added{" "}
+        After {years} years: {money(future)} — you put in {money(contributed)}, projected growth added{" "}
         {money(future - contributed)}.
       </Result>
+      <p className="text-xs leading-relaxed text-muted-foreground">Assumes a constant annual return, monthly compounding and end-of-month contributions. Excludes fees, taxes and inflation. Returns are not guaranteed.</p>
     </Panel>
   );
 }
@@ -155,13 +160,14 @@ function DebtSim() {
   return (
     <Panel title="💳 Debt payoff">
       <Field label="Balance" value={balance} onChange={setBalance} step={100} />
-      <Field label="APR %" value={apr} onChange={setApr} step={0.5} />
+      <Field label="APR %" value={apr} onChange={setApr} step={0.5} max={100} />
       <Field label="Monthly payment" value={payment} onChange={setPayment} step={25} />
       <Result>
         {months < 0
           ? "That payment is smaller than the monthly interest — the debt never goes away."
-          : `Paid off in ${months} months (${(months / 12).toFixed(1)} years), interest paid ${money(interest)}.`}
+          : bal > 0 ? "Not paid off within 50 years. Increase the monthly payment." : `Paid off in ${months} months (${(months / 12).toFixed(1)} years), interest paid ${money(interest)}.`}
       </Result>
+      <p className="text-xs text-muted-foreground">Assumes fixed APR, monthly interest, no new spending and no fees.</p>
     </Panel>
   );
 }
