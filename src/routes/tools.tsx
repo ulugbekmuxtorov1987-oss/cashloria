@@ -2,7 +2,7 @@ import { publicSeo } from "@/lib/seo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
-import { DecorShapes } from "@/components/finly/Illustrations";
+
 import { Calculator } from "lucide-react";
 
 export const Route = createFileRoute("/tools")({
@@ -31,7 +31,7 @@ const money = (n: number) => (Number.isFinite(n) ? n.toLocaleString(undefined, {
 function Tools() {
   return (
     <AppShell>
-      <div className="flex items-center gap-3">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
         <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent-soft text-accent-foreground">
           <Calculator className="h-6 w-6" aria-hidden="true" />
         </span>
@@ -40,7 +40,7 @@ function Tools() {
           <p className="mt-1 text-muted-foreground">Small tools for everyday money decisions.</p>
         </div>
       </div>
-      <DecorShapes className="mt-4 h-12 w-full opacity-60" />
+      
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
 
         <SavingsGoal />
@@ -69,20 +69,24 @@ function Field({
   value,
   onChange,
   step = 1,
+  max = 100000000,
 }: {
   label: string;
   value: number;
   onChange: (n: number) => void;
   step?: number;
+  max?: number;
 }) {
   return (
     <label className="block text-sm">
       <span className="font-semibold">{label}</span>
       <input
         type="number"
+        min={0}
+        max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => { const n = Number(e.target.value); if (Number.isFinite(n)) onChange(Math.max(0, Math.min(max, n))); }}
         className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2"
       />
     </label>
@@ -90,7 +94,7 @@ function Field({
 }
 
 function Result({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-xl bg-primary-soft px-4 py-3 text-sm font-semibold">{children}</div>;
+  return <div aria-live="polite" className="rounded-lg bg-primary-soft px-4 py-3 text-sm font-semibold">{children}</div>;
 }
 
 function SavingsGoal() {
@@ -117,9 +121,9 @@ function LoanCalc() {
     <Panel title="🏦 Loan payment">
       <Field label="Loan amount" value={amount} onChange={setAmount} step={500} />
       <Field label="APR %" value={apr} onChange={setApr} step={0.25} />
-      <Field label="Years" value={years} onChange={setYears} />
+      <Field label="Years" value={years} onChange={setYears} max={100} />
       <Result>
-        {money(payment)} / month · total interest {money(payment * n - amount)}
+        {years > 0 ? `${money(payment)} / month · total interest ${money(payment * n - amount)}` : "Enter a loan term greater than zero."}
       </Result>
     </Panel>
   );
@@ -133,8 +137,8 @@ function Inflation() {
   return (
     <Panel title="📉 Inflation impact">
       <Field label="Amount today" value={amount} onChange={setAmount} step={500} />
-      <Field label="Inflation %" value={rate} onChange={setRate} step={0.5} />
-      <Field label="Years" value={years} onChange={setYears} />
+      <Field label="Inflation %" value={rate} onChange={setRate} step={0.5} max={100} />
+      <Field label="Years" value={years} onChange={setYears} max={100} />
       <Result>
         Buying power in {years} years: {money(value)} in today's money.
       </Result>

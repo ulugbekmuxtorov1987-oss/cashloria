@@ -45,7 +45,7 @@ function Index() {
   const resume = lastOpened && !state.lessons[lastOpened.id] && isUnlocked(lastOpened.id) ? lastOpened : undefined;
   const next = resume ?? recommended;
   const name = profile?.full_name?.trim().split(" ")[0];
-  const recent = ALL_LESSONS.filter(l => state.lessons[l.id]).sort((a,b) => state.lessons[b.id].completedAt.localeCompare(state.lessons[a.id].completedAt)).slice(0,3);
+  const recent = ALL_LESSONS.filter(l => state.lessons[l.id]).sort((a,b) => (state.lessons[b.id]?.completedAt ?? "").localeCompare(state.lessons[a.id]?.completedAt ?? "")).slice(0,3);
   const mastered = stats.categoryProgress.filter(c => c.done > 0);
   return (
     <AppShell>
@@ -82,7 +82,7 @@ function Index() {
           <section className="mt-8">
             <h2 className="font-display text-lg font-bold">{recent.length ? "Recently completed" : "A strong foundation starts here"}</h2>
             <div className="mt-3 divide-y divide-border">
-              {(recent.length ? recent : ALL_LESSONS.slice(0,3)).map((lesson, i) => <Link key={lesson.id} to="/learn/$lessonId" params={{lessonId:lesson.id}} className="group grid min-h-20 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-4"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-sm font-semibold">{recent.length ? <Check className="h-5 w-5 text-primary" /> : `0${i+1}`}</span><div className="min-w-0"><p className="font-semibold group-hover:text-primary">{lesson.title}</p><p className="mt-1 text-xs text-muted-foreground">{lesson.minutes} min · {recent.length ? `${state.lessons[lesson.id].correct}/${state.lessons[lesson.id].total} correct` : lesson.difficulty}</p></div><ArrowRight className="h-4 w-4 text-muted-foreground" /></Link>)}
+              {(recent.length ? recent : ALL_LESSONS.filter(l => isUnlocked(l.id)).slice(0,3)).map((lesson, i) => <Link key={lesson.id} to="/learn/$lessonId" params={{lessonId:lesson.id}} className="group grid min-h-20 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-4"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-secondary text-sm font-semibold">{recent.length ? <Check className="h-5 w-5 text-primary" /> : `0${i+1}`}</span><div className="min-w-0"><p className="font-semibold group-hover:text-primary">{lesson.title}</p><p className="mt-1 text-xs text-muted-foreground">{lesson.minutes} min · {recent.length ? `${state.lessons[lesson.id]?.correct ?? 0}/${state.lessons[lesson.id]?.total ?? 0} correct` : lesson.difficulty}</p></div><ArrowRight className="h-4 w-4 text-muted-foreground" /></Link>)}
             </div>
           </section>
         </section>
