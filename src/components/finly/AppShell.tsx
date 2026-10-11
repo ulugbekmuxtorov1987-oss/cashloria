@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { AccountMenu } from "@/components/finly/AccountMenu";
 import { SiteMeta } from "@/components/finly/SiteMeta";
-import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library } from "lucide-react";
+import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library, House } from "lucide-react";
 import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +10,7 @@ import { useSiteSettings } from "@/lib/site-content";
 
 
 const NAV = [
+  { to: "/", label: "Home", icon: House },
   { to: "/learn", label: "Learn", icon: GraduationCap },
   { to: "/simulators", label: "Simulators", icon: FlaskConical },
   { to: "/tools", label: "Tools", icon: Calculator },
@@ -43,24 +44,25 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteMeta />
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-card focus:p-3">Skip to content</a>
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4">
-          <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold">
+        <div className="mx-auto grid min-h-18 w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 md:flex md:gap-3">
+          <Link to="/" className="flex min-w-0 items-center gap-2.5 font-display text-xl font-extrabold">
             {settings?.logo_url ? (
               <img src={settings.logo_url} alt={`${siteName} logo`} className="h-8 w-8 rounded-xl object-cover" />
             ) : (
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">₣</span>
+              <span className="grid h-8 w-8 place-items-center shrink-0 rounded-lg bg-primary text-primary-foreground">₣</span>
             )}
-            <span>{siteName}</span>
+            <span className="truncate">{siteName}<span className="hidden text-[10px] font-semibold text-muted-foreground lg:block">LEARN MONEY. MASTERED.</span></span>
           </Link>
 
 
-          <nav className="ml-4 hidden items-center gap-1 md:flex">
+          <nav aria-label="Main navigation" className="ml-4 hidden items-center gap-0.5 md:flex">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="rounded-md px-2.5 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 activeProps={{ className: "bg-primary-soft text-foreground" }}
               >
                 {item.label}
@@ -68,14 +70,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2">
-            <span className="flex items-center gap-1 rounded-full bg-streak-soft px-2.5 py-1 text-xs font-bold text-streak">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            <span className="hidden items-center gap-1 rounded-md bg-streak-soft sm:flex px-2.5 py-1 text-xs font-bold text-streak">
               🔥 {state.streak.count}
             </span>
-            <span className="flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-foreground">
+            <span className="flex items-center gap-1 rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-foreground">
               ⭐ {state.xp}
             </span>
-            <span className="hidden rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold sm:inline">
+            <span className="hidden rounded-md bg-primary-soft px-2.5 py-1 text-xs font-bold lg:inline">
               {rank.emoji} {rank.name}
             </span>
             <AccountMenu />
@@ -83,7 +85,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-6 md:pb-14">{children}</main>
+      <main id="main-content" className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 pb-28 pt-8 md:pb-16 md:pt-10">{children}</main>
 
       <footer className="border-t border-border bg-card/60 pb-24 pt-8 md:pb-8">
         <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 md:grid-cols-[1.4fr_1fr_1fr]">
@@ -154,13 +156,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </footer>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-lg items-stretch justify-between px-2 py-1.5">
+      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-lg items-stretch justify-between px-1 pb-[max(0.375rem,env(safe-area-inset-bottom))] pt-1.5">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-1.5 text-[11px] font-semibold text-muted-foreground"
+              className="flex flex-1 flex-col items-center gap-0.5 min-h-12 min-w-0 rounded-lg px-0.5 py-1.5 text-[10px] font-semibold text-muted-foreground"
               activeProps={{ className: "bg-primary-soft text-foreground" }}
             >
               <item.icon className="h-5 w-5" />
