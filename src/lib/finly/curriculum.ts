@@ -1,3 +1,4 @@
+import { level6 } from "./curriculum-safety";
 import type { CategoryId, Lesson, Level, Source } from "./types";
 
 export const CATEGORIES: { id: CategoryId; label: string; emoji: string }[] = [
@@ -1806,8 +1807,6 @@ const level5: L[] = [
     sources: [S.finra, S.oecd, S.cfpb],
   }),
 ];
-
-import { level6 } from "./curriculum-safety";
 
 const levelMeta: Omit<Level, "lessons">[] = [
   { id: 1, title: "Money Basics", subtitle: "Start from zero — what money is and how to control it.", emoji: "🌱" },
