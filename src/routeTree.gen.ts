@@ -17,6 +17,7 @@ import { Route as FinancialLiteracyRouteImport } from './routes/financial-litera
 import { Route as HowToBudgetRouteImport } from './routes/how-to-budget'
 import { Route as HowToSaveMoneyRouteImport } from './routes/how-to-save-money'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SimulatorsRouteImport } from './routes/simulators'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -66,6 +67,11 @@ const HowToSaveMoneyRoute = HowToSaveMoneyRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/how-to-budget': typeof HowToBudgetRoute
   '/how-to-save-money': typeof HowToSaveMoneyRoute
   '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
   '/reset-password': typeof ResetPasswordRoute
   '/simulators': typeof SimulatorsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/plan'
     | '/reset-password'
     | '/simulators'
     | '/sitemap.xml'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/plan'
     | '/reset-password'
     | '/simulators'
     | '/sitemap.xml'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/how-to-budget'
     | '/how-to-save-money'
     | '/library'
+    | '/plan'
     | '/reset-password'
     | '/simulators'
     | '/sitemap.xml'
@@ -259,6 +271,7 @@ export interface RootRouteChildren {
   HowToBudgetRoute: typeof HowToBudgetRoute
   HowToSaveMoneyRoute: typeof HowToSaveMoneyRoute
   LibraryRoute: typeof LibraryRoute
+  PlanRoute: typeof PlanRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SimulatorsRoute: typeof SimulatorsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -431,6 +451,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowToBudgetRoute: HowToBudgetRoute,
   HowToSaveMoneyRoute: HowToSaveMoneyRoute,
   LibraryRoute: LibraryRoute,
+  PlanRoute: PlanRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SimulatorsRoute: SimulatorsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
