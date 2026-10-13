@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { AccountMenu } from "@/components/finly/AccountMenu";
 import { SiteMeta } from "@/components/finly/SiteMeta";
-import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library, House } from "lucide-react";
+import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library, House , Target } from "lucide-react";
 import type { ReactNode } from "react";
 import { useProgress, rankFor } from "@/lib/finly/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,6 +12,7 @@ import { useSiteSettings } from "@/lib/site-content";
 const NAV = [
   { to: "/", label: "Home", icon: House },
   { to: "/learn", label: "Learn", icon: GraduationCap },
+  { to: "/plan", label: "My plan", icon: Target },
   { to: "/simulators", label: "Simulators", icon: FlaskConical },
   { to: "/tools", label: "Tools", icon: Calculator },
   { to: "/library", label: "Library", icon: Library },

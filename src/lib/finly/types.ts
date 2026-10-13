@@ -8,7 +8,8 @@ export type CategoryId =
   | "risk-insurance"
   | "taxes"
   | "psychology"
-  | "planning";
+  | "planning"
+  | "safety";
 
 export type Source = { label: string; url: string };
 

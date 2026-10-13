@@ -1,3 +1,4 @@
+import { level6 } from "./curriculum-safety";
 import type { CategoryId, Lesson, Level, Source } from "./types";
 
 export const CATEGORIES: { id: CategoryId; label: string; emoji: string }[] = [
@@ -11,9 +12,10 @@ export const CATEGORIES: { id: CategoryId; label: string; emoji: string }[] = [
   { id: "taxes", label: "Taxes", emoji: "🧾" },
   { id: "psychology", label: "Money Psychology", emoji: "🧠" },
   { id: "planning", label: "Long-Term Planning", emoji: "🚀" },
+  { id: "safety", label: "Everyday Money & Safety", emoji: "🔐" },
 ];
 
-const S = {
+export const S = {
   cfpb: { label: "Consumer Financial Protection Bureau (US)", url: "https://www.consumerfinance.gov/consumer-tools/" },
   mymoney: { label: "MyMoney.gov — U.S. Financial Literacy and Education Commission", url: "https://www.mymoney.gov/" },
   investorGov: { label: "Investor.gov — U.S. Securities and Exchange Commission", url: "https://www.investor.gov/introduction-investing" },
@@ -33,7 +35,7 @@ const S = {
   worldbank: { label: "World Bank — Financial Inclusion", url: "https://www.worldbank.org/en/topic/financialinclusion" },
 } satisfies Record<string, Source>;
 
-type L = Omit<Lesson, "levelId">;
+export type L = Omit<Lesson, "levelId">;
 
 function lesson(l: L): L {
   return l;
@@ -1812,9 +1814,10 @@ const levelMeta: Omit<Level, "lessons">[] = [
   { id: 3, title: "Smart Money", subtitle: "Inflation, compounding and how investing really works.", emoji: "🧠" },
   { id: 4, title: "Real Life Finance", subtitle: "Salary, taxes, loans, insurance and planning.", emoji: "🏙️" },
   { id: 5, title: "Advanced", subtitle: "Strategy, business, independence and behaviour.", emoji: "🚀" },
+  { id: 6, title: "Everyday Money & Safety", subtitle: "Bank fees, scams and daily money decisions.", emoji: "🔐" },
 ];
 
-const grouped = [level1, level2, level3, level4, level5];
+const grouped = [level1, level2, level3, level4, level5, level6];
 
 export const LEVELS: Level[] = levelMeta.map((meta, i) => ({
   ...meta,
