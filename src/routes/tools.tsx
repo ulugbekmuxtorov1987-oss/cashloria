@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 import { Calculator } from "lucide-react";
+import { cashflowMonth, emergencyFund, payoffPlan, type Debt, type FlowItem, type PayoffMethod } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/tools")({
   head: () => {
@@ -37,13 +38,16 @@ function Tools() {
         </span>
         <div>
           <h1 className="font-display text-3xl font-extrabold">Calculators</h1>
-          <p className="mt-1 text-muted-foreground">Small tools for everyday money decisions.</p>
+          <p className="mt-1 text-muted-foreground">Small tools for everyday money decisions. Numbers you type stay on this screen and are not saved.</p>
         </div>
       </div>
       
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
 
         <SavingsGoal />
+        <EmergencyFund />
+        <DebtPayoff />
+        <CashFlow />
         <LoanCalc />
         <Inflation />
         <NetWorth />
@@ -55,9 +59,11 @@ function Tools() {
   );
 }
 
+const slug = (t: string) => ({ "🎯 Savings goal": "savings-goal", "🏦 Compare two loans": "loan-compare", "📉 Inflation impact": "inflation", "⚖️ Net worth": "net-worth", "🥧 50/30/20 budget": "budget-503020", "⏱️ Hourly to yearly": "hourly-pay", "🛟 Emergency fund": "emergency-fund", "🧾 Debt payoff planner": "debt-payoff", "📅 Monthly cash-flow calendar": "cash-flow" } as Record<string, string>)[t];
+
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5">
+    <section id={slug(title)} className="scroll-mt-24 rounded-2xl border border-border bg-card p-5">
       <h2 className="font-display text-lg font-bold">{title}</h2>
       <div className="mt-3 space-y-3">{children}</div>
     </section>
@@ -87,7 +93,7 @@ function Field({
         step={step}
         value={value}
         onChange={(e) => { const n = Number(e.target.value); if (Number.isFinite(n)) onChange(Math.max(0, Math.min(max, n))); }}
-        className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2"
+        className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       />
     </label>
   );
@@ -218,6 +224,109 @@ function HourlyPay() {
       <Result>
         {money(hourly * hours * 52)} per year · {money((hourly * hours * 52) / 12)} per month (before tax)
       </Result>
+    </Panel>
+  );
+}
+
+const inputCls = "min-w-0 w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const clampNum = (v: string, max: number) => { const n = Number(v); return Number.isFinite(n) ? Math.max(0, Math.min(max, n)) : 0; };
+
+function EmergencyFund() {
+  const [exp, setExp] = useState(1800);
+  const [months, setMonths] = useState(3);
+  const [saved, setSaved] = useState(1000);
+  const [monthly, setMonthly] = useState(200);
+  const r = emergencyFund(exp, months, saved, monthly);
+  return (
+    <Panel title="🛟 Emergency fund">
+      <Field label="Essential expenses per month" value={exp} onChange={setExp} step={50} />
+      <Field label="Target months of cover" value={months} onChange={setMonths} max={24} />
+      <Field label="Already saved for emergencies" value={saved} onChange={setSaved} step={100} />
+      <Field label="Saving per month" value={monthly} onChange={setMonthly} step={25} />
+      <Result>
+        Target {money(r.target)}. {r.coverMonths !== null ? `Today you cover about ${r.coverMonths.toFixed(1)} months. ` : ""}
+        {r.gap === 0 ? "Target reached." : r.months === null ? `You need ${money(r.gap)} more — add a monthly amount to see a timeline.` : `${money(r.gap)} to go: about ${r.months} month${r.months === 1 ? "" : "s"} at this pace.`}
+      </Result>
+      <p className="text-xs text-muted-foreground">Ignores interest and assumes the same deposit every month. Many guides suggest 3–6 months of essentials; choose what fits your job security.</p>
+    </Panel>
+  );
+}
+
+function DebtPayoff() {
+  const [debts, setDebts] = useState<Debt[]>([
+    { name: "Credit card", balance: 2500, apr: 22, minPayment: 75 },
+    { name: "Car loan", balance: 6000, apr: 7, minPayment: 180 },
+  ]);
+  const [budget, setBudget] = useState(500);
+  const upd = (i: number, d: Partial<Debt>) => setDebts(debts.map((x, k) => (k === i ? { ...x, ...d } : x)));
+  const res = (["avalanche", "snowball"] as PayoffMethod[]).map((m) => ({ m, r: payoffPlan(debts, budget, m) }));
+  const first = res[0]!.r;
+  return (
+    <Panel title="🧾 Debt payoff planner">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[30rem] text-sm">
+          <thead><tr className="text-left text-xs text-muted-foreground"><th className="pb-1 font-semibold">Debt</th><th className="font-semibold">Balance</th><th className="font-semibold">APR %</th><th className="font-semibold">Minimum</th><th><span className="sr-only">Remove</span></th></tr></thead>
+          <tbody>{debts.map((d, i) => (
+            <tr key={i}>
+              <td className="py-1 pr-1"><input aria-label={`Debt ${i + 1} name`} value={d.name} maxLength={30} onChange={(e) => upd(i, { name: e.target.value })} className={inputCls} /></td>
+              <td className="pr-1"><input aria-label={`${d.name} balance`} type="number" min={0} value={d.balance} onChange={(e) => upd(i, { balance: clampNum(e.target.value, 1e8) })} className={inputCls} /></td>
+              <td className="pr-1"><input aria-label={`${d.name} APR percent`} type="number" min={0} max={100} step={0.1} value={d.apr} onChange={(e) => upd(i, { apr: clampNum(e.target.value, 100) })} className={inputCls} /></td>
+              <td className="pr-1"><input aria-label={`${d.name} minimum payment`} type="number" min={0} value={d.minPayment} onChange={(e) => upd(i, { minPayment: clampNum(e.target.value, 1e7) })} className={inputCls} /></td>
+              <td><button type="button" aria-label={`Remove ${d.name}`} onClick={() => setDebts(debts.filter((_, k) => k !== i))} className="min-h-9 px-2 text-muted-foreground hover:text-destructive">✕</button></td>
+            </tr>))}</tbody>
+        </table>
+      </div>
+      {debts.length < 10 && <button type="button" className="text-sm font-semibold text-primary" onClick={() => setDebts([...debts, { name: `Debt ${debts.length + 1}`, balance: 1000, apr: 15, minPayment: 30 }])}>+ Add debt</button>}
+      <Field label="Total monthly budget for debt payments" value={budget} onChange={setBudget} step={25} />
+      <div aria-live="polite" className="space-y-2">
+        {!first.ok && first.reason === "budget-below-minimums" ? (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive">Your budget is below the total minimum payments ({money(first.minimumsTotal)}). Raise it to at least that amount.</p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">{res.map(({ m, r }) => (
+            <div key={m} className="rounded-lg bg-primary-soft px-4 py-3 text-sm">
+              <p className="font-bold capitalize">{m}</p>
+              <p className="text-xs text-muted-foreground">{m === "avalanche" ? "Extra money to the highest rate first" : "Extra money to the smallest balance first"}</p>
+              {r.ok ? <><p className="mt-1 font-semibold">{r.months === 0 ? "No debt left" : `Debt-free in ${r.months} months (${(r.months / 12).toFixed(1)} yrs)`}</p><p>Total interest: {money(r.totalInterest)}</p>{r.order.length > 1 && <p className="text-xs">Order: {r.order.join(" → ")}</p>}</> : <p className="mt-1 font-semibold text-destructive">Not paid off within 50 years — increase the budget.</p>}
+            </div>))}</div>
+        )}
+      </div>
+      <p className="text-xs text-muted-foreground">Assumes fixed APRs, interest added monthly (APR ÷ 12), no new borrowing or fees, and that freed-up minimums roll into the next debt. Real lenders may calculate interest daily.</p>
+    </Panel>
+  );
+}
+
+function CashFlow() {
+  const [start, setStart] = useState(400);
+  const [items, setItems] = useState<FlowItem[]>([
+    { label: "Rent", day: 1, amount: 900, kind: "bill" },
+    { label: "Salary", day: 15, amount: 1500, kind: "income" },
+    { label: "Phone", day: 10, amount: 40, kind: "bill" },
+    { label: "Salary", day: 30, amount: 1500, kind: "income" },
+  ]);
+  const upd = (i: number, d: Partial<FlowItem>) => setItems(items.map((x, k) => (k === i ? { ...x, ...d } : x)));
+  const r = cashflowMonth(start, items);
+  return (
+    <Panel title="📅 Monthly cash-flow calendar">
+      <Field label="Balance at start of month" value={start} onChange={setStart} step={50} />
+      <ul className="space-y-2">{items.map((it, i) => (
+        <li key={i} className="grid grid-cols-[minmax(0,1fr)_5.5rem] gap-2 sm:grid-cols-[minmax(0,1fr)_5.5rem_3.5rem_6rem_auto]">
+          <input aria-label={`Item ${i + 1} name`} value={it.label} maxLength={30} onChange={(e) => upd(i, { label: e.target.value })} className={inputCls} />
+          <select aria-label={`${it.label} type`} value={it.kind} onChange={(e) => upd(i, { kind: e.target.value as FlowItem["kind"] })} className={inputCls}><option value="income">Income</option><option value="bill">Bill</option></select>
+          <input aria-label={`${it.label} day of month`} type="number" min={1} max={31} value={it.day} onChange={(e) => upd(i, { day: Math.max(1, Math.min(31, clampNum(e.target.value, 31) || 1)) })} className={inputCls} />
+          <input aria-label={`${it.label} amount`} type="number" min={0} value={it.amount} onChange={(e) => upd(i, { amount: clampNum(e.target.value, 1e8) })} className={inputCls} />
+          <button type="button" aria-label={`Remove ${it.label}`} onClick={() => setItems(items.filter((_, k) => k !== i))} className="min-h-9 px-2 text-muted-foreground hover:text-destructive">✕</button>
+        </li>))}</ul>
+      {items.length < 30 && <button type="button" className="text-sm font-semibold text-primary" onClick={() => setItems([...items, { label: "New bill", day: 20, amount: 50, kind: "bill" }])}>+ Add income or bill</button>}
+      <div aria-live="polite" className="space-y-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{r.periods.map((p) => (
+          <div key={p.label} className="rounded-lg border border-border px-3 py-2 text-xs"><p className="text-muted-foreground">{p.label}</p><p className={`text-sm font-bold ${p.end < 0 ? "text-destructive" : ""}`}>{money(p.end)}</p></div>))}</div>
+        {r.firstNegativeDay !== null ? (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive">⚠ Balance may go negative on day {r.firstNegativeDay} (lowest {money(r.lowest)}). Consider moving a bill date, keeping a buffer, or asking a provider to change the due date.</p>
+        ) : (
+          <Result>Lowest balance {money(r.lowest)}{r.lowestDay ? ` on day ${r.lowestDay}` : ""}. Month ends at {money(r.endBalance)}.</Result>
+        )}
+      </div>
+      <p className="text-xs text-muted-foreground">Same-day income is counted before bills. Periods show the balance at the end of each block of days.</p>
     </Panel>
   );
 }
