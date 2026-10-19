@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowRight, Check, Flame, RotateCcw, Target, X } from "lucide-react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
+import { DataControls } from "@/components/finly/DataControls";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ALL_LESSONS } from "@/lib/finly/curriculum";
@@ -109,6 +110,7 @@ function PlanPage() {
           </div>
         </>
       )}
+      <div className="mt-8"><DataControls /></div>
       <Disclaimer className="mt-10" />
     </AppShell>
   );
