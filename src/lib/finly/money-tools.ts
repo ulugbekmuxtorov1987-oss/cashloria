@@ -8,6 +8,17 @@ export type PayoffResult =
 
 const MAX_MONTHS = 600;
 
+/** Whole cents, so sums like 0.1 + 0.2 - 0.3 compare exactly instead of leaving 1e-17 residues. */
+const toCents = (amount: number) => Math.round(amount * 100);
+
+/**
+ * First day of the month that is `months` months after `from`. Only the month and year are meaningful:
+ * Date#setMonth would overflow on the 29th-31st (31 Oct + 4 months = 3 Mar, not February).
+ */
+export function monthAfter(from: Date, months: number): Date {
+  return new Date(from.getFullYear(), from.getMonth() + months, 1);
+}
+
 /** Monthly simulation: interest accrues, minimums are paid, all spare budget goes to the target debt. */
 export function payoffPlan(debts: Debt[], monthlyBudget: number, method: PayoffMethod): PayoffResult {
   const list = debts.filter((d) => d.balance > 0).map((d) => ({ ...d }));
@@ -17,6 +28,8 @@ export function payoffPlan(debts: Debt[], monthlyBudget: number, method: PayoffM
   let months = 0;
   let totalInterest = 0;
   const order: string[] = [];
+  // Tracked per debt (not by name) so two debts with the same name are both reported.
+  const paidOff = new Set<(typeof list)[number]>();
   while (list.some((d) => d.balance > 0.005)) {
     if (months >= MAX_MONTHS) return { ok: false, reason: "never-paid-off", minimumsTotal };
     months++;
@@ -43,8 +56,9 @@ export function payoffPlan(debts: Debt[], monthlyBudget: number, method: PayoffM
       left -= pay;
     }
     for (const d of list) {
-      if (d.balance <= 0.005 && !order.includes(d.name)) {
+      if (d.balance <= 0.005 && !paidOff.has(d)) {
         d.balance = 0;
+        paidOff.add(d);
         order.push(d.name);
       }
     }
@@ -63,31 +77,36 @@ export type CashflowResult = {
 };
 
 export function cashflowMonth(start: number, items: FlowItem[]): CashflowResult {
+  // Same-day income is counted before bills; items of the same kind keep the order they were entered in.
   const sorted = items
     .map((i) => ({ ...i, day: Math.min(31, Math.max(1, Math.round(i.day))) }))
-    .sort((a, b) => a.day - b.day || (a.kind === "income" ? -1 : 1));
-  let bal = start;
-  let lowest = start;
+    .sort((a, b) => a.day - b.day || (a.kind === b.kind ? 0 : a.kind === "income" ? -1 : 1));
+  // Balances are tracked in whole cents so a balance of exactly 0.00 is never reported as negative.
+  const startCents = toCents(start);
+  let balCents = startCents;
+  let lowestCents = startCents;
   let lowestDay: number | null = null;
-  let firstNegativeDay: number | null = start < 0 ? 1 : null;
+  let firstNegativeDay: number | null = startCents < 0 ? 1 : null;
   const rows = sorted.map((i) => {
-    bal += i.kind === "income" ? i.amount : -i.amount;
-    if (bal < lowest) { lowest = bal; lowestDay = i.day; }
-    if (bal < 0 && firstNegativeDay === null) firstNegativeDay = i.day;
-    return { ...i, balance: bal };
+    balCents += (i.kind === "income" ? 1 : -1) * toCents(i.amount);
+    if (balCents < lowestCents) { lowestCents = balCents; lowestDay = i.day; }
+    if (balCents < 0 && firstNegativeDay === null) firstNegativeDay = i.day;
+    return { ...i, balance: balCents / 100 };
   });
   const bounds: [string, number][] = [["Days 1–7", 7], ["Days 8–14", 14], ["Days 15–21", 21], ["Days 22–31", 31]];
   const periods = bounds.map(([label, endDay]) => {
     const last = [...rows].reverse().find((r) => r.day <= endDay);
-    return { label, end: last ? last.balance : start };
+    return { label, end: last ? last.balance : startCents / 100 };
   });
-  return { rows, periods, lowest, lowestDay, firstNegativeDay, endBalance: bal };
+  return { rows, periods, lowest: lowestCents / 100, lowestDay, firstNegativeDay, endBalance: balCents / 100 };
 }
 
 export function emergencyFund(monthlyExpenses: number, targetMonths: number, saved: number, monthlyContribution: number) {
-  const target = monthlyExpenses * targetMonths;
-  const gap = Math.max(0, target - saved);
-  const months = gap === 0 ? 0 : monthlyContribution > 0 ? Math.ceil(gap / monthlyContribution) : null;
+  // Whole cents, so a gap that is an exact multiple of the deposit never rounds up to an extra month.
+  const targetCents = Math.round(toCents(monthlyExpenses) * targetMonths);
+  const gapCents = Math.max(0, targetCents - toCents(saved));
+  const contributionCents = toCents(monthlyContribution);
+  const months = gapCents === 0 ? 0 : contributionCents > 0 ? Math.ceil(gapCents / contributionCents) : null;
   const coverMonths = monthlyExpenses > 0 ? saved / monthlyExpenses : null;
-  return { target, gap, months, coverMonths };
+  return { target: targetCents / 100, gap: gapCents / 100, months, coverMonths };
 }

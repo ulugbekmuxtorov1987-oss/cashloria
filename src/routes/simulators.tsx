@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 import { FlaskConical } from "lucide-react";
+import { emergencyFund } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/simulators")({
   head: () => {
@@ -176,9 +177,7 @@ function EmergencySim() {
   const [expenses, setExpenses] = useState(1800);
   const [saved, setSaved] = useState(1200);
   const [monthly, setMonthly] = useState(200);
-  const target = expenses * 3;
-  const gap = Math.max(0, target - saved);
-  const months = monthly > 0 ? Math.ceil(gap / monthly) : Infinity;
+  const { target, gap, months } = emergencyFund(expenses, 3, saved, monthly);
   return (
     <Panel title="🛟 Emergency fund">
       <Field label="Monthly essential expenses" value={expenses} onChange={setExpenses} step={50} />
@@ -188,7 +187,7 @@ function EmergencySim() {
         3-month target: {money(target)}.{" "}
         {gap === 0
           ? "You're there — consider extending to 6 months."
-          : `${money(gap)} to go — about ${Number.isFinite(months) ? months : "∞"} months at this rate.`}
+          : `${money(gap)} to go — about ${months ?? "∞"} months at this rate.`}
       </Result>
     </Panel>
   );
