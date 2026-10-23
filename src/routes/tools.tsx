@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 import { Calculator } from "lucide-react";
-import { cashflowMonth, emergencyFund, payoffPlan, type Debt, type FlowItem, type PayoffMethod } from "@/lib/finly/money-tools";
+import { cashflowMonth, emergencyFund, monthAfter, payoffPlan, type Debt, type FlowItem, type PayoffMethod } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/tools")({
   head: () => {
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/tools")({
   component: Tools,
 });
 
-const money = (n: number) => (Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—");
+const money = (n: number) => (Number.isFinite(n) ? n.toLocaleString("en", { maximumFractionDigits: 0 }) : "—");
 
 function Tools() {
   return (
@@ -112,14 +112,14 @@ function SavingsGoal() {
   let months = 0, bal = start;
   while (bal < goal && months < 1200 && (monthly > 0 || r > 0 && bal > 0)) { bal = bal * (1 + r) + monthly; months++; }
   const reached = bal >= goal;
-  const date = new Date(); date.setMonth(date.getMonth() + months);
+  const date = monthAfter(new Date(), months);
   return (
     <Panel title="🎯 Savings goal">
       <Field label="Goal amount" value={goal} onChange={setGoal} step={100} />
       <Field label="Already saved" value={start} onChange={setStart} step={100} />
       <Field label="Saving per month" value={monthly} onChange={setMonthly} step={25} />
       <Field label="Assumed yearly interest %" value={rate} onChange={setRate} step={0.25} max={30} />
-      <Result>{reached ? (months === 0 ? "Goal already reached." : `${months} months — around ${date.toLocaleDateString("en", { month: "long", year: "numeric" })}. You contribute ${money(start + monthly * months)}; interest adds about ${money(bal - start - monthly * months)}.`) : "Not reachable within 100 years — add a monthly amount."}</Result>
+      <Result>{reached ? (months === 0 ? "Goal already reached." : `${months} months — around ${date.toLocaleDateString("en", { month: "long", year: "numeric" })}. You contribute ${money(start + monthly * months)}; interest adds about ${money(bal - start - monthly * months)}.`) : "Not reachable within 100 years at this pace — increase the monthly amount or lower the goal."}</Result>
       <p className="text-xs text-muted-foreground">Assumes monthly compounding and a constant rate; real rates change.</p>
     </Panel>
   );
