@@ -7,6 +7,7 @@ import { useProgress, rankFor } from "@/lib/finly/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { CountryCode, LanguageCode } from "@/lib/finly/types";
 import { useSiteSettings } from "@/lib/site-content";
+import { safeEmail, safeHttpUrl } from "@/lib/finly/safe-url";
 
 
 const NAV = [
@@ -36,11 +37,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   const rank = rankFor(state.xp);
   const { data: settings } = useSiteSettings();
   const siteName = settings?.site_name?.trim() || "Finly";
+  const contactEmail = safeEmail(settings?.contact_email);
   const socials = [
-    settings?.instagram_url ? { label: "Instagram", url: settings.instagram_url } : null,
-    settings?.telegram_url ? { label: "Telegram", url: settings.telegram_url } : null,
-    ...(settings?.extra_links ?? []).filter((l) => l.label && l.url),
-  ].filter(Boolean) as { label: string; url: string }[];
+    { label: "Instagram", url: settings?.instagram_url },
+    { label: "Telegram", url: settings?.telegram_url },
+    ...(settings?.extra_links ?? []),
+  ].flatMap((link) => {
+    const url = safeHttpUrl(link.url);
+    return link.label && url ? [{ label: link.label, url }] : [];
+  });
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -99,11 +104,11 @@ export function AppShell({ children }: { children: ReactNode }) {
               personalized financial, investment, tax or legal advice. Rules and products differ by country — always
               check official sources for your own situation and consider a qualified professional.
             </p>
-            {(settings?.contact_email || socials.length > 0) && (
+            {(contactEmail || socials.length > 0) && (
               <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                {settings?.contact_email && (
-                  <a href={`mailto:${settings.contact_email}`} className="hover:text-foreground">
-                    {settings.contact_email}
+                {contactEmail && (
+                  <a href={`mailto:${contactEmail}`} className="hover:text-foreground">
+                    {contactEmail}
                   </a>
                 )}
                 {socials.map((l) => (

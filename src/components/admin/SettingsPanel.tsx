@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
+import { safeEmail, safeHttpUrl } from "@/lib/finly/safe-url";
 
 type Settings = {
   site_name: string;
@@ -67,6 +68,21 @@ export function SettingsPanel() {
 
   async function save() {
     if (!s) return;
+    const urls = [
+      { field: "Instagram URL", value: s.instagram_url },
+      { field: "Telegram URL", value: s.telegram_url },
+      ...s.extra_links.map((link, index) => ({ field: `${link.label || `Other social link ${index + 1}`} URL`, value: link.url })),
+    ];
+    for (const { field, value } of urls) {
+      if (value.trim() && !safeHttpUrl(value)) {
+        toast.error(`${field} must start with http:// or https://`);
+        return;
+      }
+    }
+    if (s.contact_email.trim() && !safeEmail(s.contact_email)) {
+      toast.error("Contact email must be a valid email address (max 254 characters)");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("site_settings")

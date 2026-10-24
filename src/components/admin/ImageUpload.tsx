@@ -6,6 +6,12 @@ import { toast } from "sonner";
 
 const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MAX_BYTES = 4 * 1024 * 1024;
+const EXTENSIONS: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
 
 export function ImageUpload({
   label,
@@ -32,7 +38,7 @@ export function ImageUpload({
     }
     setBusy(true);
     try {
-      const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const ext = EXTENSIONS[file.type];
       const path = `${folder}/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("media").upload(path, file, {
         contentType: file.type,
