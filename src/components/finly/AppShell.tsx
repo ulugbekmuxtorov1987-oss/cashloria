@@ -36,7 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { state, setCountry, setLanguage } = useProgress();
   const rank = rankFor(state.xp);
   const { data: settings } = useSiteSettings();
-  const siteName = settings?.site_name?.trim() || "Finly";
+  const siteName = settings?.site_name?.trim() || "Cashloria";
   const contactEmail = safeEmail(settings?.contact_email);
   const socials = [
     { label: "Instagram", url: settings?.instagram_url },

@@ -8,16 +8,16 @@ import { cashflowMonth, emergencyFund, monthAfter, payoffPlan, type Debt, type F
 
 export const Route = createFileRoute("/tools")({
   head: () => {
-    const seo = publicSeo('/tools', "Free Money Calculators — Savings, Loans, Inflation | Finly", "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.");
+    const seo = publicSeo('/tools', "Free Money Calculators — Savings, Loans, Inflation | Cashloria", "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.");
     return {
       meta: [
-        { title: "Free Money Calculators — Savings, Loans, Inflation | Finly" },
+        { title: "Free Money Calculators — Savings, Loans, Inflation | Cashloria" },
         {
           name: "description",
           content:
             "Quick calculators for savings goals, loan payments, inflation, net worth, 50/30/20 budgets and hourly pay.",
         },
-        { property: "og:title", content: "Free Money Calculators — Finly" },
+        { property: "og:title", content: "Free Money Calculators — Cashloria" },
         { property: "og:description", content: "Savings, loan, inflation, net worth and budget calculators." },
       ...seo.meta,
       ],

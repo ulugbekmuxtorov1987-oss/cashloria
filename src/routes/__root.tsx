@@ -81,17 +81,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Finly — Learn Personal Finance" },
+      { title: "Cashloria — Learn Personal Finance" },
       {
         name: "description",
         content: "Short, interactive lessons that teach budgeting, saving, credit and investing.",
       },
-      { name: "author", content: "Finly" },
+      { name: "author", content: "Cashloria" },
       {
         name: "google-site-verification",
         content: "XicYLKJotimroLI-F7x0ZFsniZKkeSx3riCoqshmDzY",
       },
-      { property: "og:title", content: "Finly — Learn Personal Finance" },
+      { property: "og:title", content: "Cashloria — Learn Personal Finance" },
       {
         property: "og:description",
         content: "Short, interactive lessons that teach budgeting, saving, credit and investing.",

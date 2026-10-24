@@ -50,9 +50,9 @@ BEGIN NEW.updated_at = now(); RETURN NEW; END; $$;
 -- site settings (single row)
 CREATE TABLE public.site_settings (
   id integer PRIMARY KEY DEFAULT 1 CHECK (id = 1),
-  site_name text NOT NULL DEFAULT 'Finly',
+  site_name text NOT NULL DEFAULT 'Cashloria',
   site_description text NOT NULL DEFAULT 'Learn money, one lesson a day.',
-  author_name text NOT NULL DEFAULT 'Finly',
+  author_name text NOT NULL DEFAULT 'Cashloria',
   contact_email text,
   instagram_url text,
   telegram_url text,
@@ -195,10 +195,10 @@ CREATE TRIGGER content_touch BEFORE UPDATE ON public.content_blocks FOR EACH ROW
 
 INSERT INTO public.content_blocks (key, label, title, body) VALUES
  ('home_hero','Homepage hero','Learn money the way you''d learn a language','Bite-sized lessons across five levels. Answer quizzes, earn XP, keep your streak alive and try real-world simulators.'),
- ('about','About section','About Finly','Finly is a free, independent financial education project built around short daily lessons.'),
- ('faq','FAQ','Frequently asked questions','Is Finly free? Yes. Is it financial advice? No — it is educational information only.'),
- ('footer','Footer text','Finly — learn money, one lesson a day',''),
- ('disclaimer','Disclaimer','Educational information only','Finly provides general educational information about personal finance. It is not personalized financial, investment, tax or legal advice.');
+ ('about','About section','About Cashloria','Cashloria is a free, independent financial education project built around short daily lessons.'),
+ ('faq','FAQ','Frequently asked questions','Is Cashloria free? Yes. Is it financial advice? No — it is educational information only.'),
+ ('footer','Footer text','Cashloria — learn money, one lesson a day',''),
+ ('disclaimer','Disclaimer','Educational information only','Cashloria provides general educational information about personal finance. It is not personalized financial, investment, tax or legal advice.');
 
 -- analytics
 CREATE TABLE public.analytics_events (

@@ -28,9 +28,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
-      { title: "Account Settings — Finly" },
-      { name: "description", content: "Manage your Finly theme, language, password and account." },
-      { property: "og:title", content: "Account Settings — Finly" },
+      { title: "Account Settings — Cashloria" },
+      { name: "description", content: "Manage your Cashloria theme, language, password and account." },
+      { property: "og:title", content: "Account Settings — Cashloria" },
       { property: "og:description", content: "Theme, language, password and account controls." },
       { name: "robots", content: "noindex" },
     ],
@@ -138,7 +138,7 @@ function SettingsPage() {
 
         <section className="rounded-2xl border border-border bg-card p-5">
           <h2 className="font-display text-xl font-bold">Appearance</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Choose how Finly looks. Saved on this device.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Choose how Cashloria looks. Saved on this device.</p>
           <div className="mt-4 grid gap-2 sm:grid-cols-3">
             {THEMES.map((t) => (
               <button
@@ -257,7 +257,7 @@ function SettingsPage() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete your Finly account?</AlertDialogTitle>
+                <AlertDialogTitle>Delete your Cashloria account?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This permanently deletes your profile, cloud progress and avatar. You can't undo this.
                 </AlertDialogDescription>

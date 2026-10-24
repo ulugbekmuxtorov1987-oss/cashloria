@@ -82,12 +82,12 @@ describe("parseBackup: rejected files", () => {
   });
 
   it.each(["[]", "null", "5", '"text"'])("rejects the JSON root %s", (text) => {
-    expect(mustReject(text)).toBe("This is not a Finly backup file (version 1).");
+    expect(mustReject(text)).toBe("This is not a Cashloria backup file (version 1).");
   });
 
   it("rejects another app or another version", () => {
-    expect(mustReject(JSON.stringify(backupWith({ app: "other" })))).toContain("not a Finly backup");
-    expect(mustReject(JSON.stringify(backupWith({ version: 2 })))).toContain("not a Finly backup");
+    expect(mustReject(JSON.stringify(backupWith({ app: "other" })))).toContain("not a Cashloria backup");
+    expect(mustReject(JSON.stringify(backupWith({ version: 2 })))).toContain("not a Cashloria backup");
   });
 
   it("rejects a damaged progress section", () => {
@@ -161,7 +161,7 @@ describe("parseBackup: sanitising untrusted values", () => {
 });
 
 describe("BACKUP_KEYS", () => {
-  it("lists only Finly learning data, never auth or session keys", () => {
+  it("lists only Cashloria learning data, never auth or session keys", () => {
     for (const key of Object.values(BACKUP_KEYS)) {
       expect(key.startsWith("finly.")).toBe(true);
       expect(key.toLowerCase()).not.toContain("auth");

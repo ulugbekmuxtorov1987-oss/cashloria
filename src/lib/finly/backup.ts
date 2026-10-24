@@ -3,7 +3,7 @@ import { GOALS, type Plan } from "./plan";
 import type { LessonResult, ProgressState } from "./progress";
 import type { CountryCode } from "./types";
 
-// Device backup of learning data. Only Finly learning keys — never auth tokens or secrets.
+// Device backup of learning data. Only Cashloria learning keys — never auth tokens or secrets.
 export const BACKUP_KEYS = { progress: "finly.progress.v1", plan: "finly.plan.v1", lastLesson: "finly.last-opened-lesson" } as const;
 
 // Untrusted JSON is read with bracket access (tsconfig: noPropertyAccessFromIndexSignature) and
@@ -20,7 +20,7 @@ export type Backup = { app: "finly"; version: 1; exportedAt: string; progress: P
 export function parseBackup(text: string): { ok: true; data: Backup; lessonCount: number } | { ok: false; error: string } {
   let raw: unknown;
   try { raw = JSON.parse(text); } catch { return { ok: false, error: "This file is not valid JSON." }; }
-  if (!isObj(raw) || raw["app"] !== "finly" || raw["version"] !== 1) return { ok: false, error: "This is not a Finly backup file (version 1)." };
+  if (!isObj(raw) || raw["app"] !== "finly" || raw["version"] !== 1) return { ok: false, error: "This is not a Cashloria backup file (version 1)." };
 
   let progress: ProgressState | null = null;
   const rawProgress = raw["progress"];

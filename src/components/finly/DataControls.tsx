@@ -29,7 +29,7 @@ export function DataControls() {
   async function onFile(file: File | undefined) {
     setError(null);
     if (!file) return;
-    if (file.size > 512_000) { setError("That file is too large to be a Finly backup."); return; }
+    if (file.size > 512_000) { setError("That file is too large to be a Cashloria backup."); return; }
     const res = parseBackup(await file.text());
     if (!res.ok) { setError(res.error); return; }
     setPending({ data: res.data, lessons: res.lessonCount });
@@ -59,7 +59,7 @@ export function DataControls() {
       <div className="mt-4 flex flex-wrap gap-2">
         <Button type="button" variant="outline" onClick={exportData}><Download /> Export backup (JSON)</Button>
         <Button type="button" variant="outline" onClick={() => fileRef.current?.click()}><Upload /> Import backup</Button>
-        <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" aria-label="Choose a Finly backup file" onChange={(e) => { void onFile(e.target.files?.[0]); e.target.value = ""; }} />
+        <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" aria-label="Choose a Cashloria backup file" onChange={(e) => { void onFile(e.target.files?.[0]); e.target.value = ""; }} />
       </div>
       {error && <p role="alert" className="mt-3 text-sm font-semibold text-destructive">{error}</p>}
       <AlertDialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>

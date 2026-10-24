@@ -1,6 +1,6 @@
 # Roadmap
 
-## Current — Finly polish
+## Current — Cashloria polish
 - [ ] Cohesive visual system and accessible mobile navigation.
 - [ ] Useful home screen with real progress and next/resume lesson.
 - [ ] Learning search/states, quiz retries and accurate completion feedback.

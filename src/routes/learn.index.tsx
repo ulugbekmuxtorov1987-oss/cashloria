@@ -11,15 +11,15 @@ import { useProgress } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/learn/")({
   head: () => {
-    const seo = publicSeo('/learn', "Learning Path — Finly Money Lessons", "Follow Finly's five-level path: money basics, budgeting, saving, credit, investing and planning.");
+    const seo = publicSeo('/learn', "Learning Path — Cashloria Money Lessons", "Follow Cashloria's five-level path: money basics, budgeting, saving, credit, investing and planning.");
     return {
       meta: [
-        { title: "Learning Path — Finly Money Lessons" },
+        { title: "Learning Path — Cashloria Money Lessons" },
         {
           name: "description",
-          content: "Follow Finly's five-level path: money basics, budgeting, saving, credit, investing and planning.",
+          content: "Follow Cashloria's five-level path: money basics, budgeting, saving, credit, investing and planning.",
         },
-        { property: "og:title", content: "Learning Path — Finly Money Lessons" },
+        { property: "og:title", content: "Learning Path — Cashloria Money Lessons" },
         { property: "og:description", content: "Five levels of short, interactive personal finance lessons." },
       ...seo.meta,
       ],
