@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
-import { getLesson, nextLessonId } from "@/lib/finly/curriculum";
+import { ALL_LESSONS, getLesson, nextLessonId } from "@/lib/finly/curriculum";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
 import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
@@ -81,6 +81,8 @@ function LessonPage() {
   }
 
   const nextId = nextLessonId(lesson.id);
+  const lessonIndex = ALL_LESSONS.findIndex((item) => item.id === lesson.id);
+  const previousLesson = ALL_LESSONS[lessonIndex - 1];
   const allChecked = lesson.quiz.every((q) => checked[q.id]);
 
   function finish() {
@@ -101,6 +103,7 @@ function LessonPage() {
 
       <header className="mt-3">
         <p className="text-3xl">{lesson.emoji}</p>
+        <p className="mt-2 text-xs text-muted-foreground">Lesson {lessonIndex + 1} of {ALL_LESSONS.length}</p>
         <h1 className="mt-1 font-display text-3xl font-extrabold">{lesson.title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {lesson.minutes} min · {lesson.xp} XP · {lesson.difficulty}
@@ -213,6 +216,23 @@ function LessonPage() {
           ))}
         </ul>
       </section>
+
+      <nav aria-label="Lesson navigation" className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        {previousLesson ? (
+          <Button asChild variant="outline">
+            <Link to="/learn/$lessonId" params={{ lessonId: previousLesson.id }}>Previous lesson</Link>
+          </Button>
+        ) : null}
+        {nextId ? (
+          isUnlocked(nextId) ? (
+            <Button asChild className="ml-auto">
+              <Link to="/learn/$lessonId" params={{ lessonId: nextId }}>Next lesson</Link>
+            </Button>
+          ) : (
+            <Button disabled className="ml-auto h-auto min-h-10 whitespace-normal text-left">Locked — finish this lesson first</Button>
+          )
+        ) : null}
+      </nav>
 
       <Disclaimer className="mt-8" />
     </AppShell>
