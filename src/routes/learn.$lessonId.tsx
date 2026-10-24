@@ -12,8 +12,8 @@ import { publicSeo } from "@/lib/seo";
 export const Route = createFileRoute("/learn/$lessonId")({
   head: ({ params }) => {
     const lesson = getLesson(params.lessonId);
-    const title = lesson ? `${lesson.title} — Finly Lesson` : "Lesson — Finly";
-    const description = lesson?.summary ?? "An interactive personal finance lesson on Finly.";
+    const title = lesson ? `${lesson.title} — Cashloria Lesson` : "Lesson — Cashloria";
+    const description = lesson?.summary ?? "An interactive personal finance lesson on Cashloria.";
     const seo = publicSeo(`/learn/${params.lessonId}`, title, description, "article");
     return {
       meta: [

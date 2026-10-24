@@ -19,10 +19,10 @@ import {
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Your Profile — Finly" },
-      { name: "description", content: "Manage your Finly display name, avatar and see your learning stats." },
-      { property: "og:title", content: "Your Profile — Finly" },
-      { property: "og:description", content: "Your Finly profile, XP, streak and achievements." },
+      { title: "Your Profile — Cashloria" },
+      { name: "description", content: "Manage your Cashloria display name, avatar and see your learning stats." },
+      { property: "og:title", content: "Your Profile — Cashloria" },
+      { property: "og:description", content: "Your Cashloria profile, XP, streak and achievements." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -88,7 +88,7 @@ function ProfilePage() {
         <header>
           <h1 className="font-display text-3xl font-extrabold">Your profile</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage how you appear in Finly and review your learning stats.
+            Manage how you appear in Cashloria and review your learning stats.
           </p>
         </header>
 

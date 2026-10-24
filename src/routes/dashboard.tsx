@@ -6,12 +6,12 @@ import { useProgress, rankFor, RANKS } from "@/lib/finly/progress";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Your Progress — Finly" },
+      { title: "Your Progress — Cashloria" },
       {
         name: "description",
-        content: "Track your XP, streak, quiz accuracy, knowledge map and achievements in Finly.",
+        content: "Track your XP, streak, quiz accuracy, knowledge map and achievements in Cashloria.",
       },
-      { property: "og:title", content: "Your Progress — Finly" },
+      { property: "og:title", content: "Your Progress — Cashloria" },
       { property: "og:description", content: "XP, streaks, knowledge map and achievements." },
       { name: "robots", content: "noindex" },
     ],

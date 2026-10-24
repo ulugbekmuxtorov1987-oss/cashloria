@@ -1,6 +1,6 @@
-/** Shared SEO helpers. Finly is English-only. */
+/** Shared SEO helpers. Cashloria is English-only. */
 export const SITE_URL = "https://finlymoney.lovable.app";
-export const SITE_NAME = "Finly";
+export const SITE_NAME = "Cashloria";
 
 /** Canonical + og:url + twitter tags for a public page. */
 export function publicSeo(path: string, title: string, description: string, type = "website") {

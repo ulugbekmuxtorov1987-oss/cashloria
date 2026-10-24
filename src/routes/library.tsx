@@ -49,16 +49,16 @@ export const Route = createFileRoute("/library")({
     };
   },
   head: () => {
-    const seo = publicSeo('/library', "Money Library — Search Every Finly Lesson", "Browse and search every Finly lesson by topic: budgeting, banking, credit, saving, investing, taxes.");
+    const seo = publicSeo('/library', "Money Library — Search Every Cashloria Lesson", "Browse and search every Cashloria lesson by topic: budgeting, banking, credit, saving, investing, taxes.");
     return {
       meta: [
-        { title: "Money Library — Search Every Finly Lesson" },
+        { title: "Money Library — Search Every Cashloria Lesson" },
         {
           name: "description",
-          content: "Browse and search every Finly lesson by topic: budgeting, banking, credit, saving, investing, taxes.",
+          content: "Browse and search every Cashloria lesson by topic: budgeting, banking, credit, saving, investing, taxes.",
         },
-        { property: "og:title", content: "Money Library — Finly" },
-        { property: "og:description", content: "Search all Finly lessons by topic and keyword." },
+        { property: "og:title", content: "Money Library — Cashloria" },
+        { property: "og:description", content: "Search all Cashloria lessons by topic and keyword." },
       ...seo.meta,
       ],
       links: seo.links,

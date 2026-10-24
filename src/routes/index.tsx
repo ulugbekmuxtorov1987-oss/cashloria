@@ -12,16 +12,16 @@ import learningArt from "@/assets/learning-still-life.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const seo = publicSeo('/', "Finly — Learn Personal Finance in 5-Minute Lessons", "Finly teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.");
+    const seo = publicSeo('/', "Cashloria — Learn Personal Finance in 5-Minute Lessons", "Cashloria teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.");
     return {
       meta: [
-        { title: "Finly — Learn Personal Finance in 5-Minute Lessons" },
+        { title: "Cashloria — Learn Personal Finance in 5-Minute Lessons" },
         {
           name: "description",
           content:
-            "Finly teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.",
+            "Cashloria teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.",
         },
-        { property: "og:title", content: "Finly — Learn Personal Finance in 5-Minute Lessons" },
+        { property: "og:title", content: "Cashloria — Learn Personal Finance in 5-Minute Lessons" },
         {
           property: "og:description",
           content: "Short lessons, quizzes, streaks and real-world money simulators. Free financial education.",
@@ -52,7 +52,7 @@ function Index() {
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
         <div className="min-w-0">
           <p className="section-label">YOUR MONEY, BETTER UNDERSTOOD</p>
-          <h1 className="learning-title mt-2">{user ? `Welcome back${name ? `, ${name}` : ""}.` : "Finly. Learn money. Mastered."}</h1>
+          <h1 className="learning-title mt-2">{user ? `Welcome back${name ? `, ${name}` : ""}.` : "Cashloria. Learn money. Mastered."}</h1>
           <p className="mt-3 text-sm text-muted-foreground">{stats.lessonsCompleted ? "A little progress today. More confidence tomorrow." : "Start with the basics. Build confidence, one lesson at a time."}</p>
         </div>
         <span className="hidden items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-semibold sm:flex"><span>{rank.emoji}</span>{rank.name}</span>
@@ -95,7 +95,7 @@ function Index() {
           </section>
           <section className="border-b border-border pb-7"><h2 className="font-display text-lg font-bold">Skills in progress</h2>{mastered.length ? <ul className="mt-4 space-y-4">{mastered.map(c => <li key={c.id}><div className="mb-2 flex justify-between gap-3 text-sm"><span>{c.label}</span><span className="text-muted-foreground">{c.done}/{c.total}</span></div><progress aria-label={`${c.label} progress`} value={c.percent} max={100} /></li>)}</ul> : <div className="mt-4"><BookOpen className="h-6 w-6 text-primary" /><p className="mt-3 text-sm text-muted-foreground">Complete your first lesson to start building your money skills.</p></div>}</section>
           <section><h2 className="flex items-center gap-2 font-display text-lg font-bold"><FlaskConical className="h-5 w-5 text-info" />Put it into practice</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Explore a monthly budget, compound growth or a debt payoff plan.</p><Button asChild variant="outline" className="mt-4 w-full"><Link to="/simulators">Open simulators <ArrowRight /></Link></Button></section>
-          {!user && <section className="border-t border-border pt-6"><p className="text-sm text-muted-foreground">Keep learning as a guest, or save your progress across devices.</p><Button asChild variant="secondary" className="mt-3 w-full"><Link to="/auth">Log in to Finly <ArrowRight /></Link></Button></section>}
+          {!user && <section className="border-t border-border pt-6"><p className="text-sm text-muted-foreground">Keep learning as a guest, or save your progress across devices.</p><Button asChild variant="secondary" className="mt-3 w-full"><Link to="/auth">Log in to Cashloria <ArrowRight /></Link></Button></section>}
         </aside>
       </div>
       <Disclaimer className="mt-10" />

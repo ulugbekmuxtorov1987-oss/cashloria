@@ -14,7 +14,7 @@ import type { Question } from "@/lib/finly/types";
 
 export const Route = createFileRoute("/plan")({
   head: () => {
-    const title = "Your Money Learning Plan — Finly";
+    const title = "Your Money Learning Plan — Cashloria";
     const description = "A personal learning order based on your goal, skill mastery by topic, a weekly target and a review quiz of your weakest lessons.";
     const seo = publicSeo("/plan", title, description);
     return {

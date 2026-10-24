@@ -30,6 +30,6 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "level-3", title: "Smart Money Cleared", emoji: "🧠", description: "Complete all of Level 3.", check: (s) => levelDone(s, 3) },
   { id: "challenger", title: "Challenger", emoji: "💪", description: "Complete 5 real-life challenges.", check: (s) => s.challenges.length >= 5 },
   { id: "halfway", title: "Halfway There", emoji: "🧗", description: "Complete half of all lessons.", check: (s) => completedCount(s) >= Math.ceil(ALL_LESSONS.length / 2) },
-  { id: "all-lessons", title: "Full Course", emoji: "🎓", description: "Complete every lesson in Finly.", check: (s) => completedCount(s) >= ALL_LESSONS.length },
+  { id: "all-lessons", title: "Full Course", emoji: "🎓", description: "Complete every lesson in Cashloria.", check: (s) => completedCount(s) >= ALL_LESSONS.length },
   { id: "xp-1000", title: "1,000 XP", emoji: "⭐", description: "Earn 1,000 XP.", check: (s) => s.xp >= 1000 },
 ];

@@ -21,10 +21,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
   },
   head: () => ({
     meta: [
-      { title: "Admin — Finly" },
-      { name: "description", content: "Manage Finly lessons, quizzes, sources and see site activity." },
-      { property: "og:title", content: "Admin — Finly" },
-      { property: "og:description", content: "Manage Finly lessons, quizzes, sources and see site activity." },
+      { title: "Admin — Cashloria" },
+      { name: "description", content: "Manage Cashloria lessons, quizzes, sources and see site activity." },
+      { property: "og:title", content: "Admin — Cashloria" },
+      { property: "og:description", content: "Manage Cashloria lessons, quizzes, sources and see site activity." },
       { name: "robots", content: "noindex" },
     ],
   }),

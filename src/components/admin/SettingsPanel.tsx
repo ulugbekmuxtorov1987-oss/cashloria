@@ -87,7 +87,7 @@ export function SettingsPanel() {
     const { error } = await supabase
       .from("site_settings")
       .update({
-        site_name: s.site_name.trim() || "Finly",
+        site_name: s.site_name.trim() || "Cashloria",
         site_description: s.site_description,
         author_name: s.author_name,
         contact_email: s.contact_email || null,

@@ -29,7 +29,7 @@ export const Route = createFileRoute("/financial-literacy")({
           heading: "The core skills",
           body: [
             "Financial literacy is made of a handful of practical skills: knowing where your money goes, spending less than you earn, keeping a buffer for emergencies, understanding how interest works both for and against you, and investing patiently for long-term goals.",
-            "None of these require advanced maths. They require repetition — which is exactly why Finly teaches them in short daily lessons.",
+            "None of these require advanced maths. They require repetition — which is exactly why Cashloria teaches them in short daily lessons.",
           ],
         },
         {

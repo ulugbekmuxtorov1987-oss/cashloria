@@ -8,16 +8,16 @@ import { emergencyFund } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/simulators")({
   head: () => {
-    const seo = publicSeo('/simulators', "Money Simulators — Budget, Compound Interest, Debt | Finly", "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.");
+    const seo = publicSeo('/simulators', "Money Simulators — Budget, Compound Interest, Debt | Cashloria", "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.");
     return {
       meta: [
-        { title: "Money Simulators — Budget, Compound Interest, Debt | Finly" },
+        { title: "Money Simulators — Budget, Compound Interest, Debt | Cashloria" },
         {
           name: "description",
           content:
             "Play with real-world money scenarios: monthly budget, compound growth, debt payoff and emergency fund planning.",
         },
-        { property: "og:title", content: "Money Simulators — Finly" },
+        { property: "og:title", content: "Money Simulators — Cashloria" },
         { property: "og:description", content: "Interactive budget, investing, debt and emergency fund simulators." },
       ...seo.meta,
       ],

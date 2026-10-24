@@ -10,10 +10,10 @@ export const Route = createFileRoute("/reset-password")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Reset Password — Finly" },
-      { name: "description", content: "Choose a new password for your Finly account." },
-      { property: "og:title", content: "Reset Password — Finly" },
-      { property: "og:description", content: "Choose a new password for your Finly account." },
+      { title: "Reset Password — Cashloria" },
+      { name: "description", content: "Choose a new password for your Cashloria account." },
+      { property: "og:title", content: "Reset Password — Cashloria" },
+      { property: "og:description", content: "Choose a new password for your Cashloria account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -62,7 +62,7 @@ function ResetPasswordPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6">
         <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
-          ← Back to Finly
+          ← Back to Cashloria
         </Link>
         <h1 className="mt-4 font-display text-2xl font-extrabold">Set a new password</h1>
         {!ready ? (

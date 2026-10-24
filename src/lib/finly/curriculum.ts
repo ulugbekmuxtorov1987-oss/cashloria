@@ -962,7 +962,7 @@ const level3: L[] = [
     explanation: [
       "Investing means putting money into assets expected to grow over time, accepting that the value can fall. Saving protects money; investing exposes it to risk in exchange for potential growth.",
       "Main asset classes: shares (part-ownership of a company), bonds (lending to a government or company for interest), property, and cash equivalents. Funds bundle many assets into one product.",
-      "Costs, taxes and rules differ by country and product. Regulators such as the SEC, the FCA and national authorities publish free, neutral guidance and warn about fraud. Finly teaches concepts only and never recommends specific investments.",
+      "Costs, taxes and rules differ by country and product. Regulators such as the SEC, the FCA and national authorities publish free, neutral guidance and warn about fraud. Cashloria teaches concepts only and never recommends specific investments.",
     ],
     example: {
       title: "Two fictional assets",

@@ -10,10 +10,10 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Sign in — Finly" },
-      { name: "description", content: "Sign in to Finly to save your progress, XP and streak." },
-      { property: "og:title", content: "Sign in — Finly" },
-      { property: "og:description", content: "Sign in to Finly to save your progress, XP and streak." },
+      { title: "Sign in — Cashloria" },
+      { name: "description", content: "Sign in to Cashloria to save your progress, XP and streak." },
+      { property: "og:title", content: "Sign in — Cashloria" },
+      { property: "og:description", content: "Sign in to Cashloria to save your progress, XP and streak." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -74,10 +74,10 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6">
         <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
-          ← Back to Finly
+          ← Back to Cashloria
         </Link>
         <h1 className="mt-4 font-display text-2xl font-extrabold">
-          {mode === "signin" ? "Welcome back to Finly" : "Create your Finly account"}
+          {mode === "signin" ? "Welcome back to Cashloria" : "Create your Cashloria account"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Save your XP, streak and completed lessons across devices.
