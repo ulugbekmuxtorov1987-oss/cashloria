@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { BrandMark } from "@/components/finly/BrandMark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +65,7 @@ function ResetPasswordPage() {
         <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
           ← Back to Cashloria
         </Link>
+        <BrandMark size={40} className="mt-4" />
         <h1 className="mt-4 font-display text-2xl font-extrabold">Set a new password</h1>
         {!ready ? (
           <p className="mt-2 text-sm text-muted-foreground">

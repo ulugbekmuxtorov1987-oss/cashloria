@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { AccountMenu } from "@/components/finly/AccountMenu";
+import { BrandMark } from "@/components/finly/BrandMark";
 import { SiteMeta } from "@/components/finly/SiteMeta";
 import { BookOpen, Calculator, FlaskConical, GraduationCap, LayoutDashboard, Library, House , Target } from "lucide-react";
 import type { ReactNode } from "react";
@@ -57,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {settings?.logo_url ? (
               <img src={settings.logo_url} alt={`${siteName} logo`} className="h-8 w-8 rounded-xl object-cover" />
             ) : (
-              <span className="grid h-8 w-8 place-items-center shrink-0 rounded-lg bg-primary text-primary-foreground">₣</span>
+              <BrandMark size={32} className="shrink-0" />
             )}
             <span className="truncate">{siteName}<span className="hidden text-[10px] font-semibold text-muted-foreground lg:block">LEARN MONEY. MASTERED.</span></span>
           </Link>
@@ -96,7 +97,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border bg-card/60 pb-24 pt-8 md:pb-8">
         <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <p className="font-display text-base font-bold">
+            <p className="flex items-center gap-2.5 font-display text-base font-bold">
+              <BrandMark size={28} />
               {siteName} — {settings?.site_description?.trim() || "learn money, one lesson a day"}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
