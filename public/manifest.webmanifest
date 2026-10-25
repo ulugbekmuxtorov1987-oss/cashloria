@@ -1,0 +1,12 @@
+{
+  "name": "Cashloria",
+  "short_name": "Cashloria",
+  "description": "Short, interactive lessons that teach budgeting, saving, credit and investing.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F3F8F5",
+  "theme_color": "#0F4A39",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
