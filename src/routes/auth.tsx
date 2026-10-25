@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { BrandMark } from "@/components/finly/BrandMark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,6 +77,7 @@ function AuthPage() {
         <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
           ← Back to Cashloria
         </Link>
+        <BrandMark size={40} className="mt-4" />
         <h1 className="mt-4 font-display text-2xl font-extrabold">
           {mode === "signin" ? "Welcome back to Cashloria" : "Create your Cashloria account"}
         </h1>
