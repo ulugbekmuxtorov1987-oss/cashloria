@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 import { Calculator } from "lucide-react";
-import { cashflowMonth, emergencyFund, monthAfter, payoffPlan, type Debt, type FlowItem, type PayoffMethod } from "@/lib/finly/money-tools";
+import { budgetSplit, cashflowMonth, compareLoans, emergencyFund, hourlyToYearly, inflationAdjusted, monthAfter, payoffPlan, savingsGoal, type BudgetCategory, type Debt, type FlowItem, type PayoffMethod } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/tools")({
   head: () => {
@@ -108,35 +108,26 @@ function SavingsGoal() {
   const [start, setStart] = useState(500);
   const [monthly, setMonthly] = useState(250);
   const [rate, setRate] = useState(3);
-  const r = rate / 100 / 12;
-  let months = 0, bal = start;
-  while (bal < goal && months < 1200 && (monthly > 0 || r > 0 && bal > 0)) { bal = bal * (1 + r) + monthly; months++; }
-  const reached = bal >= goal;
-  const date = monthAfter(new Date(), months);
+  const g = savingsGoal(goal, start, monthly, rate);
+  const date = monthAfter(new Date(), g.months);
   return (
     <Panel title="🎯 Savings goal">
       <Field label="Goal amount" value={goal} onChange={setGoal} step={100} />
       <Field label="Already saved" value={start} onChange={setStart} step={100} />
       <Field label="Saving per month" value={monthly} onChange={setMonthly} step={25} />
       <Field label="Assumed yearly interest %" value={rate} onChange={setRate} step={0.25} max={30} />
-      <Result>{reached ? (months === 0 ? "Goal already reached." : `${months} months — around ${date.toLocaleDateString("en", { month: "long", year: "numeric" })}. You contribute ${money(start + monthly * months)}; interest adds about ${money(bal - start - monthly * months)}.`) : "Not reachable within 100 years at this pace — increase the monthly amount or lower the goal."}</Result>
+      <Result>{g.reached ? (g.months === 0 ? "Goal already reached." : `${g.months} months — around ${date.toLocaleDateString("en", { month: "long", year: "numeric" })}. You contribute ${money(g.contributed)}; interest adds about ${money(g.interest)}.`) : "Not reachable within 100 years at this pace — increase the monthly amount or lower the goal."}</Result>
       <p className="text-xs text-muted-foreground">Assumes monthly compounding and a constant rate; real rates change.</p>
     </Panel>
   );
-}
-
-function payment(amount: number, apr: number, years: number) {
-  const r = apr / 100 / 12, n = Math.round(years * 12);
-  if (n <= 0) return NaN;
-  return r ? (amount * r) / (1 - Math.pow(1 + r, -n)) : amount / n;
 }
 
 function LoanCalc() {
   const [amount, setAmount] = useState(15000);
   const [a, setA] = useState({ apr: 9, years: 5, fee: 0 });
   const [b, setB] = useState({ apr: 7, years: 7, fee: 300 });
-  const rows = [a, b].map((o) => { const p = payment(amount, o.apr, o.years); const n = Math.round(o.years * 12); return { ...o, p, total: p * n + o.fee, cost: p * n + o.fee - amount }; });
-  const cheaper = rows[0]!.cost <= rows[1]!.cost ? "A" : "B";
+  const cmp = compareLoans(amount, a, b);
+  const rows = [cmp.a, cmp.b];
   const opt = (label: string, o: typeof a, set: (v: typeof a) => void) => (
     <div className="space-y-2 rounded-md border border-border p-3"><p className="text-sm font-bold">Option {label}</p>
       <Field label="APR %" value={o.apr} onChange={(v) => set({ ...o, apr: v })} step={0.25} max={100} />
@@ -148,8 +139,8 @@ function LoanCalc() {
       <Field label="Loan amount" value={amount} onChange={setAmount} step={500} />
       <div className="grid gap-3 sm:grid-cols-2">{opt("A", a, setA)}{opt("B", b, setB)}</div>
       <div aria-live="polite" className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="text-left text-muted-foreground"><th className="py-1"></th><th>Monthly</th><th>Total paid</th><th>Total cost</th></tr></thead>
-        <tbody>{rows.map((r, i) => <tr key={i} className="border-t border-border"><td className="py-1 font-semibold">{i ? "B" : "A"}</td><td>{money(r.p)}</td><td>{money(r.total)}</td><td>{money(r.cost)}</td></tr>)}</tbody></table></div>
-      <Result>{rows.every((r) => Number.isFinite(r.p)) ? `Option ${cheaper} costs ${money(Math.abs(rows[0]!.cost - rows[1]!.cost))} less overall. A lower monthly payment can still cost more in total.` : "Enter a term greater than zero."}</Result>
+        <tbody>{rows.map((r, i) => <tr key={i} className="border-t border-border"><td className="py-1 font-semibold">{i ? "B" : "A"}</td><td>{money(r.monthly)}</td><td>{money(r.total)}</td><td>{money(r.cost)}</td></tr>)}</tbody></table></div>
+      <Result>{rows.every((r) => Number.isFinite(r.monthly)) ? (cmp.cheaper === "same" ? "Both options cost the same overall." : `Option ${cmp.cheaper} costs ${money(cmp.difference)} less overall. A lower monthly payment can still cost more in total.`) : "Enter a term greater than zero."}</Result>
       <p className="text-xs text-muted-foreground">Fixed-rate, equal monthly payments. Total cost = interest + fees.</p>
     </Panel>
   );
@@ -159,7 +150,7 @@ function Inflation() {
   const [amount, setAmount] = useState(10000);
   const [rate, setRate] = useState(4);
   const [years, setYears] = useState(10);
-  const value = amount / Math.pow(1 + rate / 100, years);
+  const value = inflationAdjusted(amount, rate, years);
   return (
     <Panel title="📉 Inflation impact">
       <Field label="Amount today" value={amount} onChange={setAmount} step={500} />
@@ -184,7 +175,7 @@ function NetWorth() {
   );
 }
 
-type Cat = { name: string; group: "Needs" | "Wants" | "Savings"; amount: number };
+type Cat = BudgetCategory;
 
 function Rule503020() {
   const [income, setIncome] = useState(3000);
@@ -193,8 +184,7 @@ function Rule503020() {
     { name: "Eating out", group: "Wants", amount: 200 }, { name: "Savings", group: "Savings", amount: 400 },
   ]);
   const upd = (i: number, c: Partial<Cat>) => setCats(cats.map((x, k) => (k === i ? { ...x, ...c } : x)));
-  const groups = (["Needs", "Wants", "Savings"] as const).map((g, i) => { const spent = cats.filter((c) => c.group === g).reduce((s, c) => s + c.amount, 0); const target = income * [0.5, 0.3, 0.2][i]!; return { g, spent, target }; });
-  const left = income - cats.reduce((s, c) => s + c.amount, 0);
+  const { groups, left } = budgetSplit(income, cats);
   return (
     <Panel title="🥧 50/30/20 budget">
       <Field label="Monthly take-home pay" value={income} onChange={setIncome} step={50} />
@@ -206,7 +196,7 @@ function Rule503020() {
           <button type="button" aria-label={`Remove ${c.name}`} onClick={() => setCats(cats.filter((_, k) => k !== i))} className="px-2 text-muted-foreground hover:text-destructive">✕</button>
         </li>))}</ul>
       {cats.length < 15 && <button type="button" className="text-sm font-semibold text-primary" onClick={() => setCats([...cats, { name: "New category", group: "Wants", amount: 0 }])}>+ Add category</button>}
-      <div aria-live="polite" className="space-y-2">{groups.map(({ g, spent, target }) => (
+      <div aria-live="polite" className="space-y-2">{groups.map(({ group: g, spent, target }) => (
         <div key={g}><div className="flex justify-between text-sm"><span>{g}</span><span className={g !== "Savings" && spent > target ? "font-semibold text-destructive" : ""}>{money(spent)} / {money(target)}</span></div>
           <progress aria-label={`${g} vs target`} value={Math.min(spent, target)} max={target || 1} /></div>))}</div>
       <Result>{left >= 0 ? `${money(left)} not yet assigned.` : `Over budget by ${money(-left)}.`}</Result>
@@ -217,12 +207,13 @@ function Rule503020() {
 function HourlyPay() {
   const [hourly, setHourly] = useState(20);
   const [hours, setHours] = useState(40);
+  const pay = hourlyToYearly(hourly, hours);
   return (
     <Panel title="⏱️ Hourly to yearly">
       <Field label="Hourly rate" value={hourly} onChange={setHourly} step={0.5} />
       <Field label="Hours per week" value={hours} onChange={setHours} />
       <Result>
-        {money(hourly * hours * 52)} per year · {money((hourly * hours * 52) / 12)} per month (before tax)
+        {money(pay.yearly)} per year · {money(pay.monthly)} per month (before tax)
       </Result>
     </Panel>
   );

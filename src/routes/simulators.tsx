@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
 import { FlaskConical } from "lucide-react";
-import { emergencyFund } from "@/lib/finly/money-tools";
+import { compoundGrowth, emergencyFund, singleDebtPayoff } from "@/lib/finly/money-tools";
 
 export const Route = createFileRoute("/simulators")({
   head: () => {
@@ -121,10 +121,7 @@ function CompoundSim() {
   const [monthly, setMonthly] = useState(100);
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(20);
-  const r = rate / 100 / 12;
-  const n = years * 12;
-  const future = start * Math.pow(1 + r, n) + (r ? monthly * ((Math.pow(1 + r, n) - 1) / r) : monthly * n);
-  const contributed = start + monthly * n;
+  const { future, contributed } = compoundGrowth(start, monthly, rate, years);
   return (
     <Panel title="📈 Compound growth">
       <Field label="Starting amount" value={start} onChange={setStart} step={100} />
@@ -144,29 +141,16 @@ function DebtSim() {
   const [balance, setBalance] = useState(3000);
   const [apr, setApr] = useState(22);
   const [payment, setPayment] = useState(150);
-  const r = apr / 100 / 12;
-  let bal = balance;
-  let months = 0;
-  let interest = 0;
-  while (bal > 0 && months < 600) {
-    const i = bal * r;
-    if (payment <= i) {
-      months = -1;
-      break;
-    }
-    interest += i;
-    bal = bal + i - payment;
-    months++;
-  }
+  const res = singleDebtPayoff(balance, apr, payment);
   return (
     <Panel title="💳 Debt payoff">
       <Field label="Balance" value={balance} onChange={setBalance} step={100} />
       <Field label="APR %" value={apr} onChange={setApr} step={0.5} max={100} />
       <Field label="Monthly payment" value={payment} onChange={setPayment} step={25} />
       <Result>
-        {months < 0
+        {res.kind === "never"
           ? "That payment is smaller than the monthly interest — the debt never goes away."
-          : bal > 0 ? "Not paid off within 50 years. Increase the monthly payment." : `Paid off in ${months} months (${(months / 12).toFixed(1)} years), interest paid ${money(interest)}.`}
+          : res.kind === "too-long" ? "Not paid off within 50 years. Increase the monthly payment." : `Paid off in ${res.months} months (${(res.months / 12).toFixed(1)} years), interest paid ${money(res.totalInterest)}.`}
       </Result>
       <p className="text-xs text-muted-foreground">Assumes fixed APR, monthly interest, no new spending and no fees.</p>
     </Panel>

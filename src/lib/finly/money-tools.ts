@@ -110,3 +110,104 @@ export function emergencyFund(monthlyExpenses: number, targetMonths: number, sav
   const coverMonths = monthlyExpenses > 0 ? saved / monthlyExpenses : null;
   return { target: targetCents / 100, gap: gapCents / 100, months, coverMonths };
 }
+
+// ---------------------------------------------------------------------------------------------
+// Calculators that used to live inline in the route files. Pure and unit-tested.
+// ---------------------------------------------------------------------------------------------
+
+const monthlyRate = (yearlyPercent: number) => yearlyPercent / 100 / 12;
+
+const MAX_SAVINGS_MONTHS = 1200;
+
+export type SavingsGoalResult = { months: number; reached: boolean; balance: number; contributed: number; interest: number };
+
+/** Months until `start` grows to `goal` with a fixed monthly deposit and monthly compounding (deposit at month end). */
+export function savingsGoal(goal: number, start: number, monthly: number, yearlyRatePercent: number): SavingsGoalResult {
+  const r = monthlyRate(yearlyRatePercent);
+  const goalCents = toCents(goal);
+  let months = 0;
+  let balance = start;
+  // Compared in whole cents so ten deposits of 0.10 reach 1.00 instead of stopping at 0.9999999999999999.
+  while (toCents(balance) < goalCents && months < MAX_SAVINGS_MONTHS && (monthly > 0 || (r > 0 && balance > 0))) {
+    balance = balance * (1 + r) + monthly;
+    months++;
+  }
+  const contributed = start + monthly * months;
+  return { months, reached: toCents(balance) >= goalCents, balance, contributed, interest: balance - contributed };
+}
+
+/** Equal monthly payment of a fixed-rate loan. NaN when the term rounds to zero months. */
+export function loanPayment(amount: number, aprPercent: number, years: number): number {
+  const n = Math.round(years * 12);
+  if (n <= 0) return Number.NaN;
+  const r = monthlyRate(aprPercent);
+  return r > 0 ? (amount * r) / (1 - Math.pow(1 + r, -n)) : amount / n;
+}
+
+export type LoanOption = { apr: number; years: number; fee: number };
+export type LoanSummary = { monthly: number; months: number; total: number; cost: number };
+
+export function loanSummary(amount: number, option: LoanOption): LoanSummary {
+  const months = Math.round(option.years * 12);
+  const monthly = loanPayment(amount, option.apr, option.years);
+  const total = monthly * months + option.fee;
+  return { monthly, months, total, cost: total - amount };
+}
+
+/** "same" when the two total costs differ by less than half a cent (or cannot be computed). */
+export function compareLoans(amount: number, a: LoanOption, b: LoanOption): { a: LoanSummary; b: LoanSummary; cheaper: "A" | "B" | "same"; difference: number } {
+  const first = loanSummary(amount, a);
+  const second = loanSummary(amount, b);
+  const difference = Math.abs(first.cost - second.cost);
+  const cheaper = !(difference >= 0.005) ? "same" : first.cost < second.cost ? "A" : "B";
+  return { a: first, b: second, cheaper, difference };
+}
+
+/** What `amount` today buys after `years` of constant yearly inflation, in today's money. */
+export function inflationAdjusted(amount: number, yearlyPercent: number, years: number): number {
+  return amount / Math.pow(1 + yearlyPercent / 100, years);
+}
+
+/** Future value with monthly compounding and deposits at the end of each month. Years are rounded to whole months. */
+export function compoundGrowth(start: number, monthly: number, yearlyReturnPercent: number, years: number) {
+  const n = Math.round(years * 12);
+  const r = monthlyRate(yearlyReturnPercent);
+  const factor = Math.pow(1 + r, n);
+  const future = start * factor + (r > 0 ? monthly * ((factor - 1) / r) : monthly * n);
+  const contributed = start + monthly * n;
+  return { future, contributed, growth: future - contributed };
+}
+
+/** Gross yearly and monthly pay from an hourly rate (52 paid weeks), in whole cents. */
+export function hourlyToYearly(hourly: number, hoursPerWeek: number) {
+  const yearlyCents = Math.round(toCents(hourly) * hoursPerWeek * 52);
+  return { yearly: yearlyCents / 100, monthly: Math.round(yearlyCents / 12) / 100 };
+}
+
+export type BudgetGroup = "Needs" | "Wants" | "Savings";
+export type BudgetCategory = { name: string; group: BudgetGroup; amount: number };
+const BUDGET_SHARES: Record<BudgetGroup, number> = { Needs: 0.5, Wants: 0.3, Savings: 0.2 };
+
+/** 50/30/20 targets per group and the unassigned amount, summed in whole cents. */
+export function budgetSplit(income: number, categories: BudgetCategory[]) {
+  const incomeCents = toCents(income);
+  const groups = (["Needs", "Wants", "Savings"] as const).map((group) => {
+    const spentCents = categories.filter((c) => c.group === group).reduce((sum, c) => sum + toCents(c.amount), 0);
+    return { group, spent: spentCents / 100, target: Math.round(incomeCents * BUDGET_SHARES[group]) / 100 };
+  });
+  const totalCents = categories.reduce((sum, c) => sum + toCents(c.amount), 0);
+  return { groups, left: (incomeCents - totalCents) / 100 };
+}
+
+export type SingleDebtResult =
+  | { kind: "paid-off"; months: number; totalInterest: number }
+  | { kind: "never" }
+  | { kind: "too-long" };
+
+/** One debt, one fixed payment. "never" when the payment does not even cover the first month's interest. */
+export function singleDebtPayoff(balance: number, aprPercent: number, payment: number): SingleDebtResult {
+  if (balance <= 0) return { kind: "paid-off", months: 0, totalInterest: 0 };
+  if (payment <= balance * monthlyRate(aprPercent)) return { kind: "never" };
+  const plan = payoffPlan([{ name: "Debt", balance, apr: aprPercent, minPayment: payment }], payment, "avalanche");
+  return plan.ok ? { kind: "paid-off", months: plan.months, totalInterest: plan.totalInterest } : { kind: "too-long" };
+}
