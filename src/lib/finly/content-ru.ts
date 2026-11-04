@@ -1,5 +1,7 @@
 import type { ContentPack } from "./content-i18n";
 
+// NOTE: keep all strings fully Russian — no untranslated fragments.
+
 const TF = ["Верно", "Неверно"];
 
 /** Russian translation pack. Keys mirror the English lesson/question ids. */
