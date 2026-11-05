@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { ACHIEVEMENTS } from "@/lib/finly/achievements";
+import { localizeAchievement, localizeCategoryLabel } from "@/lib/finly/content-i18n";
+import type { CategoryId } from "@/lib/finly/types";
 import { useProgress, rankFor, RANKS } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/dashboard")({
@@ -53,7 +55,7 @@ function Dashboard() {
           {stats.categoryProgress.map((c) => (
             <div key={c.id} className="rounded-2xl border border-border bg-card p-4">
               <p className="font-semibold">
-                {c.emoji} {c.label}
+                {c.emoji} {localizeCategoryLabel(c.id as CategoryId, c.label, state.language)}
               </p>
               <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div className="h-full rounded-full bg-primary" style={{ width: `${c.percent}%` }} />
@@ -71,14 +73,15 @@ function Dashboard() {
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {ACHIEVEMENTS.map((a) => {
             const earned = state.achievements.includes(a.id);
+            const tx = localizeAchievement(a.id, { title: a.title, description: a.description }, state.language);
             return (
               <div
                 key={a.id}
                 className={`rounded-2xl border p-4 ${earned ? "border-primary bg-primary-soft" : "border-border bg-card opacity-70"}`}
               >
                 <p className="text-xl">{a.emoji}</p>
-                <p className="mt-1 font-semibold">{a.title}</p>
-                <p className="text-xs text-muted-foreground">{a.description}</p>
+                <p className="mt-1 font-semibold">{tx.title}</p>
+                <p className="text-xs text-muted-foreground">{tx.description}</p>
               </div>
             );
           })}

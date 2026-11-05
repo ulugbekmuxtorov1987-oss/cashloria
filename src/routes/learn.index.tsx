@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useLearningSession } from "@/lib/finly/learning-session";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { LEVELS } from "@/lib/finly/curriculum";
+import { localizeLevel } from "@/lib/finly/content-i18n";
 import { useProgress } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/learn/")({
@@ -35,7 +36,7 @@ function LearnPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const visible = (l: typeof LEVELS[number]["lessons"][number]) => (l.title + " " + l.summary).toLowerCase().includes(search.toLowerCase().trim()) && (filter === "all" || (filter === "completed" ? !!state.lessons[l.id] : !state.lessons[l.id] && isUnlocked(l.id)));
-  const shownLevels = LEVELS.map(l => ({...l, lessons: l.lessons.filter(visible)})).filter(l => l.lessons.length);
+  const shownLevels = LEVELS.map((l) => localizeLevel(l, state.language)).map(l => ({...l, lessons: l.lessons.filter(visible)})).filter(l => l.lessons.length);
 
   return (
     <AppShell>

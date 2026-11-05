@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { ALL_LESSONS, getLesson, nextLessonId } from "@/lib/finly/curriculum";
+import { localizeLesson } from "@/lib/finly/content-i18n";
 import { useProgress } from "@/lib/finly/progress";
 import type { Question } from "@/lib/finly/types";
 import { trackLessonComplete, trackQuizAttempt } from "@/lib/analytics";
@@ -42,9 +43,10 @@ function isCorrect(q: Question, value: string) {
 
 function LessonPage() {
   const { lessonId } = Route.useParams();
-  const lesson = getLesson(lessonId);
   const navigate = useNavigate();
   const { state, ready, completeLesson, toggleChallenge, isUnlocked } = useProgress();
+  const rawLesson = getLesson(lessonId);
+  const lesson = rawLesson ? localizeLesson(rawLesson, state.language) : undefined;
   const { rememberLesson } = useLearningSession();
   const submitted = useRef(false);
   useEffect(() => { if (ready && lesson && isUnlocked(lesson.id)) rememberLesson(lesson.id); }, [ready, lesson, isUnlocked, rememberLesson]);

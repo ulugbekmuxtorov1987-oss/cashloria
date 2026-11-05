@@ -1,22 +1,29 @@
 import { publicSeo } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { ALL_LESSONS, CATEGORIES } from "@/lib/finly/curriculum";
+import { localizeCategoryLabel, localizeLesson } from "@/lib/finly/content-i18n";
 import { useProgress } from "@/lib/finly/progress";
 import { Button } from "@/components/ui/button";
 import { highlightParts, searchItems } from "@/lib/finly/search";
+import type { LanguageCode } from "@/lib/finly/types";
 
 type LibrarySearch = { q?: string; category?: string };
 
-const SEARCH_LESSONS = ALL_LESSONS.map((lesson) => ({
-  id: lesson.id,
-  title: lesson.title,
-  summary: lesson.summary,
-  category: lesson.category,
-  body: [...lesson.explanation, ...lesson.recap],
-  lesson,
-}));
+function buildSearchLessons(lang: LanguageCode) {
+  return ALL_LESSONS.map((lesson) => {
+    const loc = localizeLesson(lesson, lang);
+    return {
+      id: lesson.id,
+      title: loc.title,
+      summary: loc.summary,
+      category: lesson.category,
+      body: [...loc.explanation, ...loc.recap],
+      lesson: loc,
+    };
+  });
+}
 
 const SEARCH_TOOLS = [
   { id: "savings-goal", title: "Savings goal calculator", page: "/tools", keywords: "save goal target months" },
@@ -68,7 +75,8 @@ export const Route = createFileRoute("/library")({
 });
 
 function LibraryPage() {
-  const { isUnlocked } = useProgress();
+  const { isUnlocked, state } = useProgress();
+  const searchLessons = useMemo(() => buildSearchLessons(state.language), [state.language]);
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const query = search.q ?? "";
@@ -90,7 +98,7 @@ function LibraryPage() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const lessons = searchItems(SEARCH_LESSONS, query)
+  const lessons = searchItems(searchLessons, query)
     .filter(({ item }) => category === "all" || item.category === category)
     .map(({ item }) => item.lesson);
   const tools = query.trim() ? searchItems(SEARCH_TOOL_ITEMS, query) : [];
@@ -126,7 +134,7 @@ function LibraryPage() {
             key={c.id}
             active={category === c.id}
             onClick={() => setCategory(c.id)}
-            label={`${c.emoji} ${c.label}`}
+            label={`${c.emoji} ${localizeCategoryLabel(c.id, c.label, state.language)}`}
           />
         ))}
       </div>

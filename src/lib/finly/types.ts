@@ -61,4 +61,4 @@ export type Level = {
 };
 
 export type CountryCode = "US" | "GB" | "UZ";
-export type LanguageCode = "en" | "uz" | "ru";
+export type LanguageCode = "en" | "ru";

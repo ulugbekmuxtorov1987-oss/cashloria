@@ -29,8 +29,7 @@ const COUNTRIES: { code: CountryCode; label: string }[] = [
 
 const LANGUAGES: { code: LanguageCode; label: string; ready: boolean }[] = [
   { code: "en", label: "English", ready: true },
-  { code: "uz", label: "Oʻzbekcha (soon)", ready: false },
-  { code: "ru", label: "Русский (soon)", ready: false },
+  { code: "ru", label: "Русский", ready: true },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

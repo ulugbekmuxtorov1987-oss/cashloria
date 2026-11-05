@@ -7,6 +7,7 @@ import { DataControls } from "@/components/finly/DataControls";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ALL_LESSONS } from "@/lib/finly/curriculum";
+import { localizeLesson } from "@/lib/finly/content-i18n";
 import { useProgress } from "@/lib/finly/progress";
 import { GOALS, goalTopics, usePlan, type GoalId, type Plan } from "@/lib/finly/plan";
 import { lessonMastery, lessonsThisWeek, MASTERY_LABEL, recommendLessons, topicMastery, type Mastery } from "@/lib/finly/mastery";
@@ -66,7 +67,7 @@ function PlanPage() {
                     <li key={lesson.id}>
                       <Link to="/learn/$lessonId" params={{ lessonId: lesson.id }} className="group grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
                         <span className="grid h-9 w-9 place-items-center rounded-md bg-secondary text-sm font-semibold">{i + 1}</span>
-                        <span className="min-w-0"><span className="block font-semibold group-hover:text-primary">{lesson.emoji} {lesson.title}</span><span className="text-xs text-muted-foreground">{reason} · {lesson.minutes} min</span></span>
+                        <span className="min-w-0"><span className="block font-semibold group-hover:text-primary">{lesson.emoji} {localizeLesson(lesson, state.language).title}</span><span className="text-xs text-muted-foreground">{reason} · {lesson.minutes} min</span></span>
                         <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </Link>
                     </li>
@@ -162,14 +163,14 @@ function ReviewQuiz() {
   const { state } = useProgress();
   const [round, setRound] = useState(0);
   const items = useMemo<ReviewItem[]>(() => {
-    const done = ALL_LESSONS.filter((l) => state.lessons[l.id]);
+    const done = ALL_LESSONS.filter((l) => state.lessons[l.id]).map((l) => localizeLesson(l, state.language));
     const weak = done.filter((l) => lessonMastery(state, l.id) === "learning");
     const pool = (weak.length ? weak : done).flatMap((l) => l.quiz.map((q) => ({ lessonTitle: l.title, q })));
     // Rotate through the pool each round so retries show different questions.
     const start = pool.length ? (round * 5) % pool.length : 0;
     return [...pool.slice(start), ...pool.slice(0, start)].slice(0, 5);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [round, Object.keys(state.lessons).length]);
+  }, [round, Object.keys(state.lessons).length, state.language]);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [text, setText] = useState("");
