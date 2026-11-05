@@ -178,8 +178,7 @@ function SettingsPage() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="ru" disabled>Русский (soon)</SelectItem>
-                  <SelectItem value="uz" disabled>Oʻzbekcha (soon)</SelectItem>
+                  <SelectItem value="ru">Русский</SelectItem>
                 </SelectContent>
               </Select>
             </div>

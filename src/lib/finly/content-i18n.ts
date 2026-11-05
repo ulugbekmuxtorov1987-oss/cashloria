@@ -1,4 +1,5 @@
 import type { CategoryId, Lesson, LanguageCode, Level, Question } from "./types";
+import { RU_PACK } from "./content-ru";
 
 /** Translation payload for one lesson. Keys mirror the English lesson shape. */
 export type LessonTx = {
@@ -34,6 +35,9 @@ export type ContentPack = {
 };
 
 const PACKS: Partial<Record<LanguageCode, ContentPack>> = {};
+
+// Built-in packs. content-ru only imports types from this module, so there is no runtime cycle.
+PACKS.ru = RU_PACK;
 
 export function registerContentPack(lang: LanguageCode, pack: ContentPack) {
   PACKS[lang] = pack;

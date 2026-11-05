@@ -38,6 +38,11 @@ const initialState: ProgressState = {
   language: "en",
 };
 
+/** Legacy stored values (e.g. "uz") fall back to English. */
+function sanitizeLanguage(v: unknown): LanguageCode {
+  return v === "ru" ? "ru" : "en";
+}
+
 export const RANKS = [
   { name: "Beginner", min: 0, emoji: "🌱" },
   { name: "Money Learner", min: 150, emoji: "📘" },
@@ -86,7 +91,7 @@ function rowToState(row: Record<string, unknown>): ProgressState {
     achievements: Array.isArray(row['achievements']) ? (row['achievements'] as string[]) : [],
     streak: { ...initialState.streak, ...streak },
     country: (row['country'] as CountryCode) ?? initialState.country,
-    language: (row['language'] as LanguageCode) ?? initialState.language,
+    language: sanitizeLanguage(row['language']),
   };
 }
 
@@ -170,6 +175,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as ProgressState;
+        parsed.language = sanitizeLanguage(parsed.language);
         setState({ ...initialState, ...parsed, streak: { ...initialState.streak, ...parsed.streak } });
       }
     } catch {
