@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 import { ACHIEVEMENTS } from "@/lib/finly/achievements";
 import { localizeAchievement, localizeCategoryLabel } from "@/lib/finly/content-i18n";
+import type { CategoryId } from "@/lib/finly/types";
 import { useProgress, rankFor, RANKS } from "@/lib/finly/progress";
 
 export const Route = createFileRoute("/dashboard")({
@@ -54,7 +55,7 @@ function Dashboard() {
           {stats.categoryProgress.map((c) => (
             <div key={c.id} className="rounded-2xl border border-border bg-card p-4">
               <p className="font-semibold">
-                {c.emoji} {localizeCategoryLabel(c.id, c.label, state.language)}
+                {c.emoji} {localizeCategoryLabel(c.id as CategoryId, c.label, state.language)}
               </p>
               <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div className="h-full rounded-full bg-primary" style={{ width: `${c.percent}%` }} />
