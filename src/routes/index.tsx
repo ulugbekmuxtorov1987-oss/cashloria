@@ -12,19 +12,19 @@ import learningArt from "@/assets/learning-still-life.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const seo = publicSeo('/', "Cashloria — Learn Personal Finance in 5-Minute Lessons", "Cashloria teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.");
+    const seo = publicSeo('/', "Cashloria — Personal Finance Lessons, Quizzes and Money Simulators", "Follow a step-by-step learning path of short interactive lessons on budgeting, saving, credit and investing — with quizzes, progress tracking, XP streaks and hands-on money simulators.");
     return {
       meta: [
-        { title: "Cashloria — Learn Personal Finance in 5-Minute Lessons" },
+        { title: "Cashloria — Personal Finance Lessons, Quizzes and Money Simulators" },
         {
           name: "description",
           content:
-            "Cashloria teaches budgeting, saving, credit, investing and taxes through short interactive lessons, quizzes, XP and streaks.",
+            "Follow a step-by-step learning path of short interactive lessons on budgeting, saving, credit and investing — with quizzes, progress tracking, XP streaks and hands-on money simulators.",
         },
-        { property: "og:title", content: "Cashloria — Learn Personal Finance in 5-Minute Lessons" },
+        { property: "og:title", content: "Cashloria — Personal Finance Lessons, Quizzes and Money Simulators" },
         {
           property: "og:description",
-          content: "Short lessons, quizzes, streaks and real-world money simulators. Free financial education.",
+          content: "A guided learning path of short personal-finance lessons with quizzes, tracked progress, XP streaks and real-world money simulators. Free financial education.",
         },
       ...seo.meta,
       ],
@@ -52,8 +52,8 @@ function Index() {
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
         <div className="min-w-0">
           <p className="section-label">YOUR MONEY, BETTER UNDERSTOOD</p>
-          <h1 className="learning-title mt-2">{user ? `Welcome back${name ? `, ${name}` : ""}.` : "Cashloria. Learn money. Mastered."}</h1>
-          <p className="mt-3 text-sm text-muted-foreground">{stats.lessonsCompleted ? "A little progress today. More confidence tomorrow." : "Start with the basics. Build confidence, one lesson at a time."}</p>
+          <h1 className="learning-title mt-2">{user ? `Welcome back${name ? `, ${name}` : ""}.` : "Learn personal finance, one short lesson at a time."}</h1>
+          <p className="mt-3 text-sm text-muted-foreground">{stats.lessonsCompleted ? "A little progress today. More confidence tomorrow." : "Master budgeting, saving, credit and investing with interactive lessons, quizzes and money simulators."}</p>
         </div>
         <span className="hidden items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-semibold sm:flex"><span>{rank.emoji}</span>{rank.name}</span>
       </header>

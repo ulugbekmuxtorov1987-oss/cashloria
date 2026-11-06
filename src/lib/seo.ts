@@ -1,5 +1,5 @@
-/** Shared SEO helpers. Cashloria is English-only. */
-export const SITE_URL = "https://finlymoney.lovable.app";
+/** Shared SEO helpers. Cashloria is available in English and Russian. */
+export const SITE_URL = "https://cashloria.lovable.app";
 export const SITE_NAME = "Cashloria";
 
 /** Canonical + og:url + twitter tags for a public page. */

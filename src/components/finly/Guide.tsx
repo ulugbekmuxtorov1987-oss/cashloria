@@ -1,7 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { AppShell, Disclaimer } from "@/components/finly/AppShell";
 
-export type GuideSection = { heading: string; body: string[] };
+export type GuideLink =
+  | { to: "/learn/$lessonId"; lessonId: string; label: string }
+  | { to: "/learn" | "/tools" | "/simulators" | "/library"; label: string };
+
+export type GuideSection = { heading: string; body: string[]; links?: GuideLink[] };
 
 export function Guide({
   title,
@@ -28,6 +32,27 @@ export function Guide({
                 {p}
               </p>
             ))}
+            {s.links && (
+              <ul className="mt-3 space-y-1.5">
+                {s.links.map((l) => (
+                  <li key={l.label}>
+                    {"lessonId" in l ? (
+                      <Link
+                        to="/learn/$lessonId"
+                        params={{ lessonId: l.lessonId }}
+                        className="text-sm font-semibold text-primary hover:underline"
+                      >
+                        {l.label} →
+                      </Link>
+                    ) : (
+                      <Link to={l.to} className="text-sm font-semibold text-primary hover:underline">
+                        {l.label} →
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         ))}
 

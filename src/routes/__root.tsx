@@ -84,27 +84,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Cashloria — Learn Personal Finance" },
+      { title: "Cashloria — Personal Finance Lessons and Money Simulators" },
       {
         name: "description",
-        content: "Short, interactive lessons that teach budgeting, saving, credit and investing.",
+        content:
+          "Learn budgeting, saving, credit and investing through short interactive lessons, quizzes and hands-on money simulators, with progress tracking and XP streaks.",
       },
       { name: "author", content: "Cashloria" },
       {
         name: "google-site-verification",
         content: "XicYLKJotimroLI-F7x0ZFsniZKkeSx3riCoqshmDzY",
       },
-      { property: "og:title", content: "Cashloria — Learn Personal Finance" },
+      { property: "og:title", content: "Cashloria — Personal Finance Lessons and Money Simulators" },
       {
         property: "og:description",
-        content: "Short, interactive lessons that teach budgeting, saving, credit and investing.",
+        content:
+          "Learn budgeting, saving, credit and investing through short interactive lessons, quizzes and hands-on money simulators, with progress tracking and XP streaks.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://finlymoney.lovable.app/og-image.png" },
+      { property: "og:image", content: "https://cashloria.lovable.app/og-image.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://finlymoney.lovable.app/og-image.png" },
+      { name: "twitter:image", content: "https://cashloria.lovable.app/og-image.png" },
       { name: "theme-color", content: "#0F4A39" },
     ],
     links: [

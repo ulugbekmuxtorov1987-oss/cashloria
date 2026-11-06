@@ -19,4 +19,4 @@ Disallow: /profile
 Disallow: /reset-password
 Disallow: /dashboard
 
-Sitemap: https://finlymoney.lovable.app/sitemap.xml
+Sitemap: https://cashloria.lovable.app/sitemap.xml
