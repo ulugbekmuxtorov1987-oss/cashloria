@@ -33,7 +33,7 @@ function Tools() {
   return (
     <AppShell>
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent-soft text-accent-foreground">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent-soft text-foreground">
           <Calculator className="h-6 w-6" aria-hidden="true" />
         </span>
         <div>

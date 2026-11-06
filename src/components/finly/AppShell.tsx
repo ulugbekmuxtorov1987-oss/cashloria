@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="hidden items-center gap-1 rounded-md bg-streak-soft sm:flex px-2.5 py-1 text-xs font-bold text-streak">
               🔥 {state.streak.count}
             </span>
-            <span className="flex items-center gap-1 rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-foreground">
+            <span className="flex items-center gap-1 rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-foreground">
               ⭐ {state.xp}
             </span>
             <span className="hidden rounded-md bg-primary-soft px-2.5 py-1 text-xs font-bold lg:inline">

@@ -66,7 +66,7 @@ function PlanPage() {
                   {recs.map(({ lesson, reason }, i) => (
                     <li key={lesson.id}>
                       <Link to="/learn/$lessonId" params={{ lessonId: lesson.id }} className="group grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-3">
-                        <span className="grid h-9 w-9 place-items-center rounded-md bg-secondary text-sm font-semibold">{i + 1}</span>
+                        <span className="grid h-9 w-9 place-items-center rounded-md bg-secondary text-sm font-semibold text-secondary-foreground">{i + 1}</span>
                         <span className="min-w-0"><span className="block font-semibold group-hover:text-primary">{lesson.emoji} {localizeLesson(lesson, state.language).title}</span><span className="text-xs text-muted-foreground">{reason} · {lesson.minutes} min</span></span>
                         <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </Link>
@@ -118,7 +118,7 @@ function PlanPage() {
 }
 
 function MasteryBadge({ m }: { m: Mastery }) {
-  const cls = m === "mastered" ? "bg-primary-soft text-primary" : m === "learning" ? "bg-accent-soft text-accent-foreground" : "bg-secondary text-muted-foreground";
+  const cls = m === "mastered" ? "bg-primary-soft text-primary" : m === "learning" ? "bg-accent-soft text-foreground" : "bg-secondary text-secondary-foreground";
   return <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${cls}`}>{MASTERY_LABEL[m]}</span>;
 }
 
@@ -200,7 +200,7 @@ function ReviewQuiz() {
           <input aria-label="Your answer" value={text} disabled={checked} onChange={(e) => setText(e.target.value)} className="mt-3 w-full rounded-md border border-border bg-background px-3 py-2" />
         )}
         {checked && (
-          <div aria-live="polite" className="mt-3 rounded-md bg-secondary p-3 text-sm">
+          <div aria-live="polite" className="mt-3 rounded-md bg-secondary p-3 text-sm text-secondary-foreground">
             <p className="flex items-center gap-1 font-semibold">{correct ? <><Check className="h-4 w-4 text-primary" />Correct</> : <><X className="h-4 w-4 text-destructive" />Not quite{q.kind === "choice" ? ` — answer: ${q.options[q.answer]}` : ` — answer: ${q.answer}`}</>}</p>
             <p className="mt-1 text-muted-foreground">{q.explanation}</p>
           </div>
