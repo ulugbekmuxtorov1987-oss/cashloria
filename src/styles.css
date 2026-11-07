@@ -5,8 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Cashloria design system — friendly, premium learning app.
- * All colors are oklch tokens. Never hardcode colors in components.
+ * Cashloria design system — premium fintech learning product.
+ * Brand palette: forest green #173F35, dark forest #102F29, sand beige #EDE3D1,
+ * cream #FBF8F1, electric purple #873BFA, bright purple #A45BFF.
+ * All colors are semantic tokens. Never hardcode colors in components.
  */
 
 @theme inline {
@@ -17,8 +19,11 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
   --font-display: "Manrope", system-ui, sans-serif;
   --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-accent: "Instrument Serif", Georgia, serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -61,91 +66,111 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Static brand tokens — identical in both themes. */
+  --color-forest: #173f35;
+  --color-forest-deep: #102f29;
+  --color-forest-raised: #1c4a3d;
+  --color-sand: #ede3d1;
+  --color-sand-soft: #b9ae99;
+  --color-cream: #fbf8f1;
+  --color-ink: #173f35;
+  --color-ink-soft: #51655b;
+  --color-purple: #873bfa;
+  --color-purple-bright: #a45bff;
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.96 0.024 86);
-  --foreground: oklch(0.25 0.04 155);
-  --card: oklch(0.99 0.014 86);
-  --card-foreground: oklch(0.25 0.04 155);
-  --popover: oklch(0.99 0.014 86);
-  --popover-foreground: oklch(0.25 0.04 155);
-  --primary: oklch(0.55 0.24 290);
-  --primary-foreground: oklch(0.99 0.01 290);
-  --primary-soft: oklch(0.93 0.045 290);
-  --secondary: oklch(0.33 0.06 155);
-  --secondary-foreground: oklch(0.95 0.02 85);
-  --muted: oklch(0.92 0.025 85);
-  --muted-foreground: oklch(0.44 0.035 155);
-  --accent: oklch(0.36 0.07 155);
-  --accent-foreground: oklch(0.96 0.02 85);
-  --accent-soft: oklch(0.9 0.035 150);
-  --streak: oklch(0.42 0.11 60);
-  --streak-soft: oklch(0.92 0.05 55);
-  --success: oklch(0.55 0.13 152);
-  --success-soft: oklch(0.92 0.05 150);
-  --info: oklch(0.55 0.2 285);
-  --info-soft: oklch(0.93 0.04 290);
-  --destructive: oklch(0.56 0.2 24);
-  --destructive-foreground: oklch(0.99 0.01 20);
-  --destructive-soft: oklch(0.94 0.04 24);
-  --border: oklch(0.86 0.03 85);
-  --input: oklch(0.86 0.03 85);
-  --ring: oklch(0.55 0.24 290);
-  --chart-1: oklch(0.55 0.24 290);
-  --chart-2: oklch(0.36 0.07 155);
-  --chart-3: oklch(0.72 0.06 80);
-  --chart-4: oklch(0.68 0.19 42);
-  --chart-5: oklch(0.7 0.15 295);
-  --sidebar: oklch(0.94 0.025 85);
-  --sidebar-foreground: oklch(0.25 0.04 155);
-  --sidebar-primary: oklch(0.55 0.24 290);
-  --sidebar-primary-foreground: oklch(0.99 0.01 290);
-  --sidebar-accent: oklch(0.9 0.03 85);
-  --sidebar-accent-foreground: oklch(0.25 0.04 155);
-  --sidebar-border: oklch(0.86 0.03 85);
-  --sidebar-ring: oklch(0.55 0.24 290);
+  --radius: 1rem;
+
+  /* Light theme: warm cream surfaces, forest ink, electric purple actions. */
+  --background: #fbf8f1;
+  --foreground: #173f35;
+  --card: #fffdf8;
+  --card-foreground: #173f35;
+  --popover: #fffdf8;
+  --popover-foreground: #173f35;
+  --primary: #873bfa;
+  --primary-foreground: #fbf8f1;
+  --primary-soft: rgba(135, 59, 250, 0.1);
+  --secondary: #173f35;
+  --secondary-foreground: #fbf8f1;
+  --muted: #f1eada;
+  --muted-foreground: #57685e;
+  --accent: #173f35;
+  --accent-foreground: #fbf8f1;
+  --accent-soft: #e3efe7;
+  --streak: #b8641a;
+  --streak-soft: #f8ecd4;
+  --success: #2e7d5b;
+  --success-soft: #e0f1e8;
+  --info: #873bfa;
+  --info-soft: #f1e8fe;
+  --destructive: #c2452f;
+  --destructive-foreground: #fbf8f1;
+  --destructive-soft: #fbe7e1;
+  --border: #e4dac6;
+  --input: #d9cfb8;
+  --ring: #873bfa;
+  --chart-1: #873bfa;
+  --chart-2: #173f35;
+  --chart-3: #c9b99a;
+  --chart-4: #d4842a;
+  --chart-5: #a45bff;
+  --sidebar: #f5efe2;
+  --sidebar-foreground: #173f35;
+  --sidebar-primary: #873bfa;
+  --sidebar-primary-foreground: #fbf8f1;
+  --sidebar-accent: #ece4d2;
+  --sidebar-accent-foreground: #173f35;
+  --sidebar-border: #e4dac6;
+  --sidebar-ring: #873bfa;
 }
 
 .dark {
-  /* Sand-beige tinted dark: lifted off near-black, warm rather than cold. */
-  --background: oklch(0.27 0.026 92);
-  --foreground: oklch(0.94 0.028 88);
-  --card: oklch(0.33 0.028 92);
-  --card-foreground: oklch(0.94 0.028 88);
-  --popover: oklch(0.33 0.028 92);
-  --popover-foreground: oklch(0.94 0.028 88);
-  --primary: oklch(0.66 0.22 292);
-  --primary-foreground: oklch(0.99 0.01 290);
-  --primary-soft: oklch(0.38 0.1 292);
-  --secondary: oklch(0.42 0.035 100);
-  --secondary-foreground: oklch(0.95 0.02 88);
-  --muted: oklch(0.36 0.026 92);
-  --muted-foreground: oklch(0.8 0.025 88);
-  --accent: oklch(0.87 0.05 88);
-  --accent-foreground: oklch(0.26 0.04 150);
-  --accent-soft: oklch(0.42 0.05 100);
-  --streak: oklch(0.8 0.14 48);
-  --streak-soft: oklch(0.34 0.07 48);
-  --success: oklch(0.74 0.13 150);
-  --success-soft: oklch(0.38 0.07 150);
-  --info: oklch(0.72 0.16 290);
-  --info-soft: oklch(0.39 0.09 290);
-  --destructive: oklch(0.7 0.17 24);
-  --destructive-foreground: oklch(0.99 0.01 20);
-  --destructive-soft: oklch(0.4 0.08 24);
-  --border: oklch(1 0 0 / 16%);
-  --input: oklch(1 0 0 / 20%);
-  --ring: oklch(0.66 0.22 292);
-  --sidebar: oklch(0.3 0.026 92);
-  --sidebar-foreground: oklch(0.94 0.028 88);
-  --sidebar-primary: oklch(0.66 0.22 292);
-  --sidebar-primary-foreground: oklch(0.99 0.01 290);
-  --sidebar-accent: oklch(0.38 0.03 95);
-  --sidebar-accent-foreground: oklch(0.94 0.028 88);
-  --sidebar-border: oklch(1 0 0 / 16%);
-  --sidebar-ring: oklch(0.66 0.22 292);
+  /* The Cashloria signature look: deep forest green, warm sand typography,
+     electric purple glow. Lifted and warm — never near-black, never glaring. */
+  --background: #102f29;
+  --foreground: #ede3d1;
+  --card: #173f35;
+  --card-foreground: #ede3d1;
+  --popover: #1c4a3d;
+  --popover-foreground: #ede3d1;
+  --primary: #9450fa;
+  --primary-foreground: #fbf8f1;
+  --primary-soft: rgba(148, 80, 250, 0.2);
+  --secondary: #1e4a3e;
+  --secondary-foreground: #ede3d1;
+  --muted: #1a4237;
+  --muted-foreground: #b9ae99;
+  --accent: #a45bff;
+  --accent-foreground: #102f29;
+  --accent-soft: rgba(164, 91, 255, 0.16);
+  --streak: #f2b04c;
+  --streak-soft: rgba(242, 176, 76, 0.14);
+  --success: #4fbe8a;
+  --success-soft: rgba(79, 190, 138, 0.15);
+  --info: #a45bff;
+  --info-soft: rgba(164, 91, 255, 0.15);
+  --destructive: #f27d6a;
+  --destructive-foreground: #102f29;
+  --destructive-soft: rgba(242, 125, 106, 0.15);
+  --border: rgba(237, 227, 209, 0.14);
+  --input: rgba(237, 227, 209, 0.22);
+  --ring: #a45bff;
+  --chart-1: #a45bff;
+  --chart-2: #ede3d1;
+  --chart-3: #4fbe8a;
+  --chart-4: #f2b04c;
+  --chart-5: #873bfa;
+  --sidebar: #14352e;
+  --sidebar-foreground: #ede3d1;
+  --sidebar-primary: #9450fa;
+  --sidebar-primary-foreground: #fbf8f1;
+  --sidebar-accent: #1a4237;
+  --sidebar-accent-foreground: #ede3d1;
+  --sidebar-border: rgba(237, 227, 209, 0.14);
+  --sidebar-ring: #a45bff;
 }
 
 @layer base {
@@ -169,12 +194,65 @@
   }
 }
 
+/* ---------- Surfaces ---------- */
+
 @utility card-soft {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
   box-shadow: 0 1px 0 0 color-mix(in oklab, var(--color-foreground) 6%, transparent);
 }
+
+/* Cream floating card with deep soft shadow — the hero signature. */
+@utility card-float {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  border: 1px solid rgba(23, 63, 53, 0.08);
+  border-radius: var(--radius-3xl);
+  box-shadow:
+    0 24px 60px -18px rgba(6, 20, 16, 0.5),
+    0 4px 16px -6px rgba(6, 20, 16, 0.3);
+}
+
+/* Frosted glass on dark surfaces. */
+@utility glass {
+  background-color: rgba(237, 227, 209, 0.06);
+  border: 1px solid rgba(237, 227, 209, 0.14);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* ---------- Atmosphere ---------- */
+
+/* Subtle dotted texture, like the brand reference. */
+@utility bg-dots {
+  background-image: radial-gradient(color-mix(in oklab, var(--color-foreground) 14%, transparent) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+
+@utility bg-hero-glow {
+  background-image:
+    radial-gradient(70% 60% at 50% 100%, color-mix(in oklab, var(--color-primary) 30%, transparent), transparent 70%),
+    radial-gradient(60% 60% at 10% 0%, color-mix(in oklab, var(--color-accent) 22%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 90% 10%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 70%);
+}
+
+/* Electric-purple ambient glow for the dark forest hero. */
+@utility bg-aurora {
+  background-image:
+    radial-gradient(55% 45% at 50% 110%, rgba(135, 59, 250, 0.35), transparent 70%),
+    radial-gradient(45% 40% at 88% 8%, rgba(164, 91, 255, 0.2), transparent 70%),
+    radial-gradient(50% 45% at 6% 18%, rgba(79, 190, 138, 0.12), transparent 70%);
+}
+
+/* Purple gradient text for headline accents. */
+@utility text-purple-gradient {
+  background-image: linear-gradient(100deg, #a45bff, #873bfa 60%, #c49aff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Motion ---------- */
 
 @utility pop-shadow {
   box-shadow: 0 4px 0 0 color-mix(in oklab, var(--color-foreground) 14%, transparent);
@@ -187,26 +265,122 @@
   }
 }
 
-@utility bg-hero-glow {
-  background-image:
-    radial-gradient(70% 60% at 50% 100%, color-mix(in oklab, var(--color-primary) 30%, transparent), transparent 70%),
-    radial-gradient(60% 60% at 10% 0%, color-mix(in oklab, var(--color-accent) 22%, transparent), transparent 70%),
-    radial-gradient(40% 40% at 90% 10%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 70%);
-}
-
-/* Shared learning surfaces and interaction accessibility. */
-@layer base {
-  body { overflow-wrap: break-word; }
-  a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
-  :focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
-  input, select, textarea { min-width: 0; min-height: 44px; }
-  progress { appearance: none; border: 0; height: 6px; width: 100%; border-radius: 4px; overflow: hidden; background: var(--muted); }
-  progress::-webkit-progress-bar { background: var(--muted); }
-  progress::-webkit-progress-value { background: var(--primary); border-radius: 4px; }
-  progress::-moz-progress-bar { background: var(--primary); border-radius: 4px; }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+/* Soft purple glow behind primary actions. */
+@utility glow-purple {
+  box-shadow:
+    0 10px 30px -8px rgba(135, 59, 250, 0.55),
+    0 2px 10px -2px rgba(164, 91, 255, 0.4);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow:
+      0 16px 40px -10px rgba(135, 59, 250, 0.65),
+      0 4px 14px -2px rgba(164, 91, 255, 0.5);
+  }
+  &:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
   }
 }
-@utility learning-title { font-size: 2rem; line-height: 1.2; font-weight: 750; }
-@utility section-label { font-size: 0.6875rem; line-height: 1.5; text-transform: uppercase; letter-spacing: 0; font-weight: 700; color: var(--muted-foreground); }
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@utility animate-float {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 640ms cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+/* ---------- Shared learning surfaces and interaction accessibility ---------- */
+
+@layer base {
+  body {
+    overflow-wrap: break-word;
+  }
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+  input,
+  select,
+  textarea {
+    min-width: 0;
+    min-height: 44px;
+  }
+  progress {
+    appearance: none;
+    border: 0;
+    height: 6px;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--muted);
+  }
+  progress::-webkit-progress-bar {
+    background: var(--muted);
+  }
+  progress::-webkit-progress-value {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+  progress::-moz-progress-bar {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility learning-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+@utility section-label {
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}

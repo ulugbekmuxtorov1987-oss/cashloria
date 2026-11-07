@@ -23,7 +23,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    let stored: Theme = "system";
+    // Default to the signature deep-forest look; the toggle still offers light/system.
+    let stored: Theme = "dark";
     try {
       const raw = localStorage.getItem(STORAGE_KEY) as Theme | null;
       if (raw === "light" || raw === "dark" || raw === "system") stored = raw;

@@ -51,25 +51,27 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <SiteMeta />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-card focus:p-3">Skip to content</a>
-      <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
-        <div className="mx-auto grid min-h-18 w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 md:flex md:gap-3">
+      <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4">
+        <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2 md:flex md:gap-4">
           <Link to="/" className="flex min-w-0 items-center gap-2.5 font-display text-xl font-extrabold">
             {settings?.logo_url ? (
-              <img src={settings.logo_url} alt={`${siteName} logo`} className="h-8 w-8 rounded-xl object-cover" />
+              <img src={settings.logo_url} alt={`${siteName} logo`} className="h-9 w-9 rounded-2xl object-cover" />
             ) : (
-              <BrandMark size={32} className="shrink-0" />
+              <BrandMark size={36} className="shrink-0 drop-shadow-[0_6px_16px_rgba(135,59,250,0.45)]" />
             )}
             <span className="truncate">{siteName}<span className="hidden text-[10px] font-semibold text-muted-foreground lg:block">LEARN MONEY. MASTERED.</span></span>
           </Link>
 
-
-          <nav aria-label="Main navigation" className="ml-4 hidden items-center gap-0.5 md:flex">
+          <nav
+            aria-label="Main navigation"
+            className="glass mx-auto hidden items-center gap-0.5 rounded-full p-1.5 shadow-[0_12px_40px_-12px_rgba(6,20,16,0.45)] md:flex"
+          >
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="rounded-md px-2.5 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                activeProps={{ className: "bg-primary-soft text-foreground" }}
+                className="rounded-full px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+                activeProps={{ className: "bg-primary text-primary-foreground shadow-[0_6px_18px_-4px_rgba(135,59,250,0.6)]" }}
               >
                 {item.label}
               </Link>
@@ -77,13 +79,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
-            <span className="hidden items-center gap-1 rounded-md bg-streak-soft sm:flex px-2.5 py-1 text-xs font-bold text-streak">
+            <span className="hidden items-center gap-1 rounded-full bg-streak-soft px-3 py-1.5 text-xs font-bold text-streak sm:flex">
               🔥 {state.streak.count}
             </span>
-            <span className="flex items-center gap-1 rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-foreground">
+            <span className="glass flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold text-foreground">
               ⭐ {state.xp}
             </span>
-            <span className="hidden rounded-md bg-primary-soft px-2.5 py-1 text-xs font-bold lg:inline">
+            <span className="hidden rounded-full bg-primary-soft px-3 py-1.5 text-xs font-bold lg:inline">
               {rank.emoji} {rank.name}
             </span>
             <AccountMenu />
@@ -163,14 +165,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </footer>
 
-      <nav aria-label="Mobile navigation" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-lg items-stretch justify-between px-1 pb-[max(0.375rem,env(safe-area-inset-bottom))] pt-1.5">
+      <nav aria-label="Mobile navigation" className="fixed inset-x-3 bottom-3 z-40 md:hidden">
+        <div className="glass mx-auto flex max-w-lg items-stretch justify-between rounded-3xl px-1.5 py-1.5 shadow-[0_16px_48px_-12px_rgba(6,20,16,0.55)] pb-[max(0.375rem,env(safe-area-inset-bottom))]">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="flex flex-1 flex-col items-center gap-0.5 min-h-12 min-w-0 rounded-lg px-0.5 py-1.5 text-[10px] font-semibold text-muted-foreground"
-              activeProps={{ className: "bg-primary-soft text-foreground" }}
+              className="flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-0.5 py-1.5 text-[10px] font-semibold text-muted-foreground transition-colors"
+              activeProps={{ className: "bg-primary text-primary-foreground" }}
             >
               <item.icon className="h-5 w-5" />
               {item.label}
