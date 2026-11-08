@@ -124,10 +124,17 @@ function Index() {
           </p>
           <div className="animate-rise mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row" style={{ animationDelay: "240ms" }}>
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link to={next ? "/learn/$lessonId" : "/learn"} params={next ? { lessonId: next.id } : undefined}>
-                <Play />
-                {resume ? "Continue learning" : stats.lessonsCompleted ? "Start next lesson" : "Start learning"}
-              </Link>
+              {next ? (
+                <Link to="/learn/$lessonId" params={{ lessonId: next.id }}>
+                  <Play />
+                  {resume ? "Continue learning" : stats.lessonsCompleted ? "Start next lesson" : "Start learning"}
+                </Link>
+              ) : (
+                <Link to="/learn">
+                  <Play />
+                  Review lessons
+                </Link>
+              )}
             </Button>
             <Button asChild size="lg" variant="outline" className="w-full border-sand/25 text-sand hover:bg-sand/10 hover:text-sand sm:w-auto">
               <Link to="/tools">
