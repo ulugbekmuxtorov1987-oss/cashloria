@@ -1,3 +1,6 @@
+[Please open this link to enter the website](https://cashloria.lovable.app)
+
+
 #  Cashloria
 
 Build a professional educational web app called Finly.
